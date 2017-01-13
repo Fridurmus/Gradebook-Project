@@ -34,11 +34,13 @@ $gradebookRows = pdoSelect('SELECT * FROM gradebook');
 <?php
     foreach($gradebookRows as $gradebookRow){
     extract($gradebookRow);
+    $assign_name = htmlspecialchars($assign_name);
     echo "<tr>
       <td>$assign_id</td>
       <td>$assign_name</td>
       <td>$grade_earned</td>
       <td>$grade_max</td>
+      <td><a href='edit_grade.php?id=$assign_id&name=$assign_name&earned=$grade_earned&max=$grade_max'>Edit</a></td>
       </tr>
     ";
 }
