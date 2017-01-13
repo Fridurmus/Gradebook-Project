@@ -13,15 +13,12 @@ $assignname = $_POST['assignname'];
 $assigngrade = $_POST['assigngrade'];
 $maxgrade = $_POST['maxgrade'];
 
-$sql = "INSERT INTO gradebook (assign_name, grade_earned, grade_max)
-        VALUES (:assign_name, :grade_earned, :grade_max)";
+$sql = "UPDATE gradebook 
+        SET assign_name = :assignname, grade_earned = :assigngrade, grade_max = :maxgrade
+        WHERE assign_id = :assignid";
 
-$vars = array(':assign_name'=>$assignname, ':grade_earned'=>$assigngrade, ':grade_max'=>$maxgrade);
+$vars = array(':assignname'=>$assignname, ':assigngrade'=>$assigngrade, ':maxgrade'=>$maxgrade, ':assignid'=>$assignid);
 
-//pdoUpdate($sql, $vars);
+pdoUpdate($sql, $vars);
 
-/*header("Location: index.php"); /* Redirect browser
-exit();*/
-
-echo '<pre>';
-print_r($_POST);
+header("Location: index.php"); // Redirect browser

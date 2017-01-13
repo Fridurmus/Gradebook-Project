@@ -9,9 +9,9 @@
             <label>Assignment Name:</label>
             <input name='assignname' type='text' value='$assignname' required><br>
             <label>Grade Earned:</label>
-            <input name='assigngrade' type='number' value=$assigngrade required><br>
+            <input name='assigngrade' type='number' value=$assigngrade step='any' required><br>
             <label>Max Grade:</label>
-            <input name='maxgrade' type='number' value=$assignmax required><br>
+            <input name='maxgrade' type='number' value=$assignmax step='any' required><br>
             <input type='hidden' name='assignid' value=$assignid required><br>
             <input type='submit'>
           </form>";
