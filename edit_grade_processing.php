@@ -9,7 +9,7 @@
 require_once 'includes/database_functions.php';
 
 $assignid = $_POST['assignid'];
-$assignname = $_POST['assignname'];
+$assignname = htmlspecialchars($_POST['assignname']);
 $assigngrade = $_POST['assigngrade'];
 $maxgrade = $_POST['maxgrade'];
 

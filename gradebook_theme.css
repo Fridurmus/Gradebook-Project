@@ -2,7 +2,7 @@ body{
 
 }
 
-table{
+/**table{
     text-align: center;
     margin: auto;
     border-style: solid;
@@ -15,6 +15,7 @@ th, td{
     border-style: solid;
     border-color: black;
 }
+**/
 .centerbutton{
     text-align: center;
 }
