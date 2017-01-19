@@ -1,18 +1,6 @@
-<?PHP
-session_start();
-$_SESSION = array();
-
-if (ini_get("session.use_cookies")) {
-    $params = session_get_cookie_params();
-    setcookie(session_name(), '', time() - 42000,
-        $params["path"], $params["domain"],
-        $params["secure"], $params["httponly"]
-    );
-}
-
-session_destroy();
+<?php
+    session_start();
 ?>
-
 <head>
     <title>My Gradebook</title>
     <meta name="author" content="Sean Davis">
@@ -44,6 +32,7 @@ session_destroy();
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
+                <li><a href="index.php">View Classes<span class="sr-only">(current)</span></a></li>
                 <!--<li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
                        aria-expanded="false">Dropdown <span class="caret"></span></a>
@@ -61,6 +50,8 @@ session_destroy();
         </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->
 </nav>
+
+
 <body>
 <?php
 /**
@@ -70,39 +61,58 @@ session_destroy();
  * Time: 4:24 PM
  */
 require_once 'includes/database_functions.php';
-$classRows = pdoSelect('SELECT * FROM class');
+
+$total_earned = 0;
+$total_possible = 0;
+$classid = $_SESSION['classid'];
+$sql = "SELECT * FROM gradebook WHERE class_id = $classid";
+$gradebookRows = pdoSelect($sql);
+
+/**
+if (!$gradebookRows){
+    echo "<script type='text/javascript'>alert('No class found!');
+                  window.location.href='view_grades.php';
+    </script>";
+};**/
 ?>
-<div id="classtable">
+<div id="gradebook">
     <div class="container maintable">
         <div class="row">
-            <div class="col-md-4 col-md-offset-4">
+            <div class="col-md-8 col-md-offset-2">
                 <table class="table table-hover">
                     <thead>
                     <tr>
-                        <th>Class Name</th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
+                        <th>Assignment Name</th>
+                        <th>Grade Earned</th>
+                        <th>Possible Grade</th>
+                        <th>Percentage Grade</th>
                         <th></th>
                     </tr>
                     </thead>
                     <tbody>
                     <?php
-                    foreach ($classRows as $classRow) {
-                        extract($classRow);
-                        $class_name = htmlspecialchars($class_name);
+                    foreach ($gradebookRows as $gradebookRow) {
+                        extract($gradebookRow);
+                        $assign_name = htmlspecialchars($assign_name);
+                        $pcnt_assign = round((($grade_earned / $grade_max) * 100), 2);
+                        $total_earned = $total_earned + $grade_earned;
+                        $total_possible = $total_possible + $grade_max;
+                        $pcnt_total = round((($total_earned / $total_possible) * 100), 2);
                         echo <<<BUD
       <tr>
-      <td>$class_name</td>
-      <td colspan='3' class='addeditbtn'><a href='set_class_processing.php?id=$class_id' class='btn btn-sm btn-primary'>View Grades</a></td>
-      <td class='addeditbtn'><a href='edit_class.php?id=$class_id&name=$class_name' class='btn btn-sm btn-warning'>Edit</a></td>
+      <td>$assign_name</td>
+      <td>$grade_earned</td>
+      <td>$grade_max</td>
+      <td>$pcnt_assign%</td>
+      <td class='addeditbtn'><a href='edit_grade.php?id=$assign_id&name=$assign_name&earned=$grade_earned&max=$grade_max' class='btn btn-sm btn-warning'>Edit</a></td>
       </tr>
 BUD;
                     }
                     echo <<<DUD
       <tr>
-      <td colspan='4'></td>
-      <td class='addeditbtn'><a href="add_class.php" class="btn btn-success btn-sm">Add New +</a></td>
+      <td id='overalltext' colspan='3';>Overall:</td>
+      <td>$pcnt_total%</td>
+      <td class='addeditbtn'><a href="add_grade.php" class="btn btn-success btn-sm">Add New +</a></td>
       </tr>
 DUD;
                     ?>
@@ -114,10 +124,13 @@ DUD;
         </div>
     </div>
 </div>
+</div>
+
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 <!-- Latest compiled and minified JavaScript -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
         integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
         crossorigin="anonymous"></script>
+<script type="text/javascript" src="index.js"></script>
 </body>

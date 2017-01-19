@@ -1,7 +1,3 @@
-<?php
-    session_start();
-?>
-
 <head>
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
@@ -12,19 +8,13 @@
 <body>
 <?php
     require_once "includes/pollform_generator.php";
-    $assignnameform = textField("Assignment Name:", "assignname", "Assignment");
-    $gradeearnform = numField("Grade Earned:", "assigngrade", "", "", "0");
-    $maxgradeform = numField("Max Grade:", "maxgrade", "", "", "0");
-    $classid = $_SESSION['classid'];
+    $classnameform = textField("Class Name:", "classname", "Class");
 ?>
 <div class="container">
     <div class="row">
         <div class="col-md-4 col-md-offset-4">
-            <form action="add_grade_processing.php" method="post">
-                <?=$assignnameform?>
-                <?=$gradeearnform?>
-                <?=$maxgradeform?>
-                <?="<input type='hidden' name='classid' value=$classid required>"?><br>
+            <form action="add_class_processing.php" method="post">
+                <?=$classnameform?>
                 <button class='btn btn-primary' type="submit">Submit</button>
             </form>
         </div>

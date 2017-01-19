@@ -10,12 +10,13 @@ require_once 'includes/database_functions.php';
 $assignname = $_POST['assignname'];
 $assigngrade = $_POST['assigngrade'];
 $maxgrade = $_POST['maxgrade'];
+$classid = $_POST['classid'];
 
-$sql = "INSERT INTO gradebook (assign_name, grade_earned, grade_max)
-        VALUES (:assign_name, :grade_earned, :grade_max)";
+$sql = "INSERT INTO gradebook (class_id, assign_name, grade_earned, grade_max)
+        VALUES (:class_id, :assign_name, :grade_earned, :grade_max)";
 
-$vars = array(':assign_name'=>$assignname, ':grade_earned'=>$assigngrade, ':grade_max'=>$maxgrade);
+$vars = array(':class_id'=>$classid, ':assign_name'=>$assignname, ':grade_earned'=>$assigngrade, ':grade_max'=>$maxgrade);
 
 pdoInsert($sql, $vars);
 
-header("Location: index.php"); /* Redirect browser */
+header("Location: view_grades.php"); /* Redirect browser */

@@ -1,4 +1,5 @@
 <?php
+    session_start();
 /**
  * Created by PhpStorm.
  * User: Sean Davis
@@ -12,6 +13,7 @@ $assignid = $_POST['assignid'];
 $assignname = htmlspecialchars($_POST['assignname']);
 $assigngrade = $_POST['assigngrade'];
 $maxgrade = $_POST['maxgrade'];
+$classid = $_SESSION['classid'];
 
 $sql = "UPDATE gradebook 
         SET assign_name = :assignname, grade_earned = :assigngrade, grade_max = :maxgrade
@@ -21,4 +23,4 @@ $vars = array(':assignname'=>$assignname, ':assigngrade'=>$assigngrade, ':maxgra
 
 pdoUpdate($sql, $vars);
 
-header("Location: index.php"); // Redirect browser
+header("Location: view_grades.php"); /* Redirect browser */
