@@ -56,12 +56,12 @@
 ?>
 <div class="container">
     <div class="row">
-        <div class="col-md-4 col-md-offset-4">
-            <form action='edit_grade_processing.php' method='post'>
+        <div class="col-md-4 col-md-offset-4" id="editgradeform">
+            <form action=''>
                 <?=$assignnameform?>
                 <?=$gradeearnform?>
                 <?=$maxgradeform?>
-                <?="<input type='hidden' name='assignid' value=$assignid required>"?><br>
+                <?="<input type='hidden' id='assignid' name='assignid' value=$assignid required>"?><br>
                 <button class='btn btn-primary' type="submit">Submit</button>
             </form>
         </div>
@@ -71,4 +71,5 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 <!-- Latest compiled and minified JavaScript -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script type="text/javascript" src="edit_grade_handler.js"></script>
 </body>

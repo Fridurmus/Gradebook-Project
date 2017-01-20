@@ -22,5 +22,3 @@ $sql = "UPDATE gradebook
 $vars = array(':assignname'=>$assignname, ':assigngrade'=>$assigngrade, ':maxgrade'=>$maxgrade, ':assignid'=>$assignid);
 
 pdoUpdate($sql, $vars);
-
-header("Location: view_grades.php"); /* Redirect browser */
