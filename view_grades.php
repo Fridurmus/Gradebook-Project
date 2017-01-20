@@ -33,19 +33,6 @@
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
                 <li><a href="index.php">View Classes<span class="sr-only">(current)</span></a></li>
-                <!--<li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-                       aria-expanded="false">Dropdown <span class="caret"></span></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="index.php">Change Class</a></li>
-                        <li><a href="#">Another action</a></li>
-                        <li><a href="#">Something else here</a></li>
-                        <li role="separator" class="divider"></li>
-                        <li><a href="#">Separated link</a></li>
-                        <li role="separator" class="divider"></li>
-                        <li><a href="#">One more separated link</a></li>
-                    </ul>
-                </li>-->
             </ul>
         </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->
@@ -68,12 +55,6 @@ $classid = $_SESSION['classid'];
 $sql = "SELECT * FROM gradebook WHERE class_id = $classid";
 $gradebookRows = pdoSelect($sql);
 
-/**
-if (!$gradebookRows){
-    echo "<script type='text/javascript'>alert('No class found!');
-                  window.location.href='view_grades.php';
-    </script>";
-};**/
 ?>
 <div id="gradebook">
     <div class="container maintable">
@@ -215,10 +196,3 @@ DUD;
     });
 </script>
 </body>
-
-<!--
-                $assignid = (int)$_GET['id'];
-                $assignname = $_GET['name'];
-                $assigngrade = $_GET['earned'];
-                $assignmax = $_GET['max'];
--->

@@ -8,5 +8,3 @@ $("#addclassform").submit(function () {
     });
     event.preventDefault();
 });
-
-//add_class_processing.php
