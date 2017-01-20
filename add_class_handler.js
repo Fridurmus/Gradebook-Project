@@ -6,7 +6,7 @@ $("#addclassform").submit(function () {
     $.post("add_class_processing.php", classname, function () {
         location.replace("index.php");
     });
-    return false;
+    event.preventDefault();
 });
 
 //add_class_processing.php
