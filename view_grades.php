@@ -112,7 +112,7 @@ BUD;
       <tr>
       <td id='overalltext' colspan='3';>Overall:</td>
       <td>$pcnt_total%</td>
-      <td class='addeditbtn'><a href="add_grade.php" class="btn btn-success btn-sm">Add New +</a></td>
+      <td class='addeditbtn'><button data-toggle="modal" data-target="#addassignmodal" class="btn btn-success btn-sm">Add New +</a></td>
       </tr>
 DUD;
                     ?>
@@ -125,6 +125,40 @@ DUD;
     </div>
 </div>
 </div>
+<div class="modal fade" id="addassignmodal" tabindex="-1" role="dialog" aria-labelledby="Add Assignment">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="addassignmodallabel">Add New Assignment</h4>
+            </div>
+            <div class="modal-body">
+                <?php
+                    require_once "includes/pollform_generator.php";
+                    $assignnameform = textField("Assignment Name:", "assignnameadd", "Assignment");
+                    $gradeearnform = numField("Grade Earned:", "assigngradeadd", "", "", "0");
+                    $maxgradeform = numField("Max Grade:", "maxgradeadd", "", "", "0");
+                    $classid = $_SESSION['classid'];
+                ?>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-4" id="addgradeform">
+                            <form action="">
+                                <?=$assignnameform?>
+                                <?=$gradeearnform?>
+                                <?=$maxgradeform?>
+                                <?="<input type='hidden' id='classidadd' name='classidadd' value=$classid required>"?><br>
+                                <button class='btn btn-primary' type="submit">Submit</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
@@ -132,4 +166,9 @@ DUD;
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
         integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
         crossorigin="anonymous"></script>
+<script type="text/javascript" src="add_grade_handler.js"></script>
+<script type="text/javascript" src="edit_grade_handler.js"></script>
+<script>
+
+</script>
 </body>

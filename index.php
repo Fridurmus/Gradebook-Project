@@ -195,8 +195,8 @@ DUD;
 <script>
     $('#editclassmodal').on('show.bs.modal', function(event){
         var button = $(event.relatedTarget);
-        var classid = button.attr("data-classid");
-        var classname = button.attr("data-classname");
+        var classid = button.data("classid");
+        var classname = button.data("classname");
         var modal = $(this);
         modal.find("#classnameedit").val(classname);
         modal.find("#classidedit").val(classid);
