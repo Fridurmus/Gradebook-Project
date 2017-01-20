@@ -104,7 +104,9 @@ if (!$gradebookRows){
       <td>$grade_earned</td>
       <td>$grade_max</td>
       <td>$pcnt_assign%</td>
-      <td class='addeditbtn'><a href='edit_grade.php?id=$assign_id&name=$assign_name&earned=$grade_earned&max=$grade_max' class='btn btn-sm btn-warning'>Edit</a></td>
+      <td class='addeditbtn'><button data-toggle="modal" data-target="#editassignmodal" data-assignid="$assign_id"
+                             data-assignname="$assign_name" data-assigngrade="$grade_earned" data-grademax="$grade_max" 
+                             class="btn btn-sm btn-warning">Edit</a></td>
       </tr>
 BUD;
                     }
@@ -157,7 +159,37 @@ DUD;
         </div>
     </div>
 </div>
-
+<div class="modal fade" id="editassignmodal" tabindex="-1" role="dialog" aria-labelledby="Edit Assignment">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="editassignmodallabel">Add New Assignment</h4>
+            </div>
+            <div class="modal-body">
+                <?php
+                require_once "includes/pollform_generator.php";
+                $assignnameform = textField("Assignment Name:", "assignnameedit", "");
+                $gradeearnform = numField("Grade Earned:", "assigngradeedit", "", "");
+                $maxgradeform = numField("Max Grade:", "maxgradeedit", "", "");
+                ?>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-4" id="editgradeform">
+                            <form action=''>
+                                <?=$assignnameform?>
+                                <?=$gradeearnform?>
+                                <?=$maxgradeform?>
+                                <?="<input type='hidden' id='assignidedit' name='assignidedit' required>"?><br>
+                                <button class='btn btn-primary' type="submit">Submit</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
@@ -169,6 +201,24 @@ DUD;
 <script type="text/javascript" src="add_grade_handler.js"></script>
 <script type="text/javascript" src="edit_grade_handler.js"></script>
 <script>
-
+    $('#editassignmodal').on('show.bs.modal', function(event){
+        var button = $(event.relatedTarget);
+        var assignid = button.data("assignid");
+        var assignname = button.data("assignname");
+        var assigngrade = button.data("assigngrade");
+        var maxgrade = button.data("grademax");
+        var modal = $(this);
+        modal.find("#assignidedit").val(assignid);
+        modal.find("#assignnameedit").val(assignname);
+        modal.find("#assigngradeedit").val(assigngrade);
+        modal.find("#maxgradeedit").val(maxgrade);
+    });
 </script>
 </body>
+
+<!--
+                $assignid = (int)$_GET['id'];
+                $assignname = $_GET['name'];
+                $assigngrade = $_GET['earned'];
+                $assignmax = $_GET['max'];
+-->
