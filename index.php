@@ -75,12 +75,14 @@ $classRows = pdoSelect('SELECT * FROM class');
 <div id="classtable">
     <div class="container maintable">
         <div class="row">
-            <div class="col-md-4 col-md-offset-4">
+            <div class="col-md-6 col-md-offset-3">
                 <table class="table table-hover">
                     <thead>
                     <tr>
                         <th>Class Name</th>
                         <th></th>
+                        <th></th>
+                        <th>Overall Grade</th>
                         <th></th>
                         <th></th>
                         <th></th>
@@ -89,19 +91,29 @@ $classRows = pdoSelect('SELECT * FROM class');
                     <tbody>
                     <?php
                     foreach ($classRows as $classRow) {
+                        $total_earned = 0;
+                        $total_possible = 0;
                         extract($classRow);
                         $class_name = htmlspecialchars($class_name);
+                        $gradebookRows = pdoSelect("SELECT * FROM gradebook WHERE class_id = $class_id");
+                        foreach ($gradebookRows as $gradebookRow) {
+                            extract($gradebookRow);
+                            $total_earned = $total_earned + $grade_earned;
+                            $total_possible = $total_possible + $grade_max;
+                            $pcnt_total = round((($total_earned / $total_possible) * 100), 2);
+                        }
                         echo <<<BUD
       <tr>
-      <td>$class_name</td>
-      <td colspan='3' class='addeditbtn'><a href='set_class_processing.php?id=$class_id' class='btn btn-sm btn-primary'>View Grades</a></td>
+      <td colspan='3'>$class_name</td>
+      <td colspan='2'>$pcnt_total%</td>
+      <td class='addeditbtn'><a href='set_class_processing.php?id=$class_id' class='btn btn-sm btn-primary'>View Grades</a></td>
       <td class='addeditbtn'><a href='edit_class.php?id=$class_id&name=$class_name' class='btn btn-sm btn-warning'>Edit</a></td>
       </tr>
 BUD;
                     }
                     echo <<<DUD
       <tr>
-      <td colspan='4'></td>
+      <td colspan='6'></td>
       <td class='addeditbtn'><a href="add_class.php" class="btn btn-success btn-sm">Add New +</a></td>
       </tr>
 DUD;
