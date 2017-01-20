@@ -15,5 +15,3 @@ $sql = "INSERT INTO class (class_name)
 $vars = array(':class_name'=>$classname);
 
 pdoInsert($sql, $vars);
-
-header("Location: index.php"); /* Redirect browser */
