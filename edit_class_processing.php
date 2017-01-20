@@ -18,5 +18,3 @@ $sql = "UPDATE class
 $vars = array(':classname'=>$classname, ':classid'=>$classid);
 
 pdoUpdate($sql, $vars);
-
-header("Location: index.php"); // Redirect browser
