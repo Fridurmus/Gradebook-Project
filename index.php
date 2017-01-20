@@ -108,14 +108,15 @@ $classRows = pdoSelect('SELECT * FROM class');
       <td colspan='3'>$class_name</td>
       <td colspan='2'>$pcnt_total%</td>
       <td class='addeditbtn'><a href='set_class_processing.php?id=$class_id' class='btn btn-sm btn-primary'>View Grades</a></td>
-      <td class='addeditbtn'><a href='edit_class.php?id=$class_id&name=$class_name' class='btn btn-sm btn-warning'>Edit</a></td>
+      <td class='addeditbtn'><button data-toggle="modal" data-target="#editclassmodal" class='btn btn-sm btn-warning'
+        data-classname='$class_name' data-classid='$class_id'>Edit</a></td>
       </tr>
 BUD;
                     }
                     echo <<<DUD
       <tr>
       <td colspan='6'></td>
-      <td class='addeditbtn'><a href="add_class.php" class="btn btn-success btn-sm">Add New +</a></td>
+      <td class='addeditbtn'><button data-toggle="modal" data-target="#addclassmodal" class="btn btn-success btn-sm">Add New +</button></td>
       </tr>
 DUD;
                     ?>
@@ -127,10 +128,78 @@ DUD;
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="addclassmodal" tabindex="-1" role="dialog" aria-labelledby="Add Class">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="addclassmodallabel">Add New Class</h4>
+            </div>
+            <div class="modal-body">
+                <?php
+                require_once "includes/pollform_generator.php";
+                $classnameform = textField("Class Name:", "classname", "Class");
+                ?>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-4" id="addclassform">
+                            <form action="">
+                                <?=$classnameform?>
+                                <button class='btn btn-primary' type="submit">Submit</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editclassmodal" tabindex="-1" role="dialog" aria-labelledby="Edit Class">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="editclassmodallabel">Edit Class</h4>
+            </div>
+            <div class="modal-body">
+                <?php
+                    require_once "includes/pollform_generator.php";
+                    $classnameform = textField("Class Name:", "classnameedit", "");
+                ?>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-4" id="editclassform">
+                            <form action=''>
+                                <?=$classnameform?>
+                                <?="<input type='hidden' name='classidedit' id='classidedit' required>"?><br>
+                                <button class='btn btn-primary' type="submit">Submit</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 <!-- Latest compiled and minified JavaScript -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
         integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
         crossorigin="anonymous"></script>
+<script type="text/javascript" src="add_class_handler.js"></script>
+<script type="text/javascript" src="edit_class_handler.js"></script>
+<script>
+    $('#editclassmodal').on('show.bs.modal', function(event){
+        var button = $(event.relatedTarget);
+        var classid = button.attr("data-classid");
+        var classname = button.attr("data-classname");
+        var modal = $(this);
+        modal.find("#classnameedit").val(classname);
+        modal.find("#classidedit").val(classid);
+    });
+</script>
 </body>
