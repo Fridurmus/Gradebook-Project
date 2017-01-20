@@ -82,7 +82,7 @@ $classRows = pdoSelect('SELECT * FROM class');
                         <th>Class Name</th>
                         <th></th>
                         <th></th>
-                        <th>Overall Grade</th>
+                        <th>Grade</th>
                         <th></th>
                         <th></th>
                         <th></th>
