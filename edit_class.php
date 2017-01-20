@@ -21,7 +21,7 @@ $classnameform = textField("Class Name:", "classname", $classname, $classname);
         <div class="col-md-4 col-md-offset-4">
             <form action='edit_class_processing.php' method='post'>
                 <?=$classnameform?>
-                <?="<input type='hidden' name='assignid' value=$classid required>"?><br>
+                <?="<input type='hidden' name='classid' value=$classid required>"?><br>
                 <button class='btn btn-primary' type="submit">Submit</button>
             </form>
         </div>

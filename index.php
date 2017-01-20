@@ -93,6 +93,7 @@ $classRows = pdoSelect('SELECT * FROM class');
                     foreach ($classRows as $classRow) {
                         $total_earned = 0;
                         $total_possible = 0;
+                        $pcnt_total = 0;
                         extract($classRow);
                         $class_name = htmlspecialchars($class_name);
                         $gradebookRows = pdoSelect("SELECT * FROM gradebook WHERE class_id = $class_id");
