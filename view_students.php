@@ -61,13 +61,21 @@ $studentRows = pdoSelect('SELECT * FROM student');
                     <tbody>
                     <?php
                     foreach ($studentRows as $studentRow) {
+                        $student_classes = [];
                         extract($studentRow);
                         $student_name = htmlspecialchars($student_name);
+                        $studentClasses = pdoSelect("SELECT class_id 
+                                                     FROM student_class
+                                                     WHERE student_id = $student_id");
+                        foreach($studentClasses as $studentClass){
+                            array_push($student_classes, join(',', $studentClass));
+                        }
+                        $student_classes = join(',', $student_classes);
                         echo <<<BUD
       <tr>
       <td colspan='3'>$student_name</td>
       <td class='addeditbtn'><button data-toggle="modal" data-target="#editstudentmodal" class='btn btn-sm btn-warning'
-        data-studentname='$student_name' data-studentid='$student_id'>Edit</a></td>
+        data-studentname='$student_name' data-studentid='$student_id' data-studentclasses='$student_classes'>Edit</a></td>
       </tr>
 BUD;
                     }
@@ -139,18 +147,19 @@ DUD;
                                 <?PHP
                                 $sqlclass = "SELECT * FROM class";
                                 $classRows = pdoSelect($sqlclass);
+
                                 foreach($classRows as $classRow){
-                                extract($classRow);
-                                $class_name = htmlspecialchars($class_name);
-                                echo <<<STU
-                                <div class="col-sm-4">
-                                    <div class="checkbox">
-                                        <label>
-                                            <input type="checkbox" value="$class_id">
-                                            <strong>$class_name</strong>
-                                        </label>
+                                    extract($classRow);
+                                    $class_name = htmlspecialchars($class_name);
+                                    echo <<<STU
+                                    <div class="col-sm-4">
+                                        <div class="checkbox">
+                                            <label>
+                                                <input type="checkbox" id="$class_id" value="$class_id">
+                                                <strong>$class_name</strong>
+                                            </label>
+                                        </div>
                                     </div>
-                                </div>
 STU;
                                 }
                                 ?>
