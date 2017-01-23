@@ -1,20 +1,5 @@
-<?PHP
-session_start();
-$_SESSION = array();
-
-if (ini_get("session.use_cookies")) {
-    $params = session_get_cookie_params();
-    setcookie(session_name(), '', time() - 42000,
-        $params["path"], $params["domain"],
-        $params["secure"], $params["httponly"]
-    );
-}
-
-session_destroy();
-?>
-
 <head>
-    <title>My Gradebook</title>
+    <title>Student List</title>
     <meta name="author" content="Sean Davis">
     <meta name="description" content="Gradebook and grade tracker">
     <!-- Latest compiled and minified CSS -->
@@ -44,7 +29,7 @@ session_destroy();
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
-                <li><a href="view_students.php">View Students</a></li>
+                <li><a href="index.php">View Classes<span class="sr-only">(current)</span></a></li>
             </ul>
         </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->
@@ -58,53 +43,37 @@ session_destroy();
  * Time: 4:24 PM
  */
 require_once 'includes/database_functions.php';
-$classRows = pdoSelect('SELECT * FROM class');
+$studentRows = pdoSelect('SELECT * FROM student');
 ?>
 <div id="classtable">
     <div class="container maintable">
         <div class="row">
-            <div class="col-md-6 col-md-offset-3">
+            <div class="col-md-4 col-md-offset-4">
                 <table class="table table-hover">
                     <thead>
                     <tr>
-                        <th>Class Name</th>
-                        <th></th>
-                        <th></th>
-                        <th>Grade</th>
-                        <th></th>
+                        <th>Student Name</th>
                         <th></th>
                         <th></th>
                     </tr>
                     </thead>
                     <tbody>
                     <?php
-                    foreach ($classRows as $classRow) {
-                        $total_earned = 0;
-                        $total_possible = 0;
-                        $pcnt_total = 0;
-                        extract($classRow);
-                        $class_name = htmlspecialchars($class_name);
-                        $gradebookRows = pdoSelect("SELECT * FROM gradebook WHERE class_id = $class_id");
-                        foreach ($gradebookRows as $gradebookRow) {
-                            extract($gradebookRow);
-                            $total_earned = $total_earned + $grade_earned;
-                            $total_possible = $total_possible + $grade_max;
-                            $pcnt_total = round((($total_earned / $total_possible) * 100), 2);
-                        }
+                    foreach ($studentRows as $studentRow) {
+                        extract($studentRow);
+                        $student_name = htmlspecialchars($student_name);
                         echo <<<BUD
       <tr>
-      <td colspan='3'>$class_name</td>
-      <td colspan='2'>$pcnt_total%</td>
-      <td class='addeditbtn'><a href='set_class_processing.php?id=$class_id' class='btn btn-sm btn-primary'>View Grades</a></td>
-      <td class='addeditbtn'><button data-toggle="modal" data-target="#editclassmodal" class='btn btn-sm btn-warning'
-        data-classname='$class_name' data-classid='$class_id'>Edit</a></td>
+      <td colspan='2'>$student_name</td>
+      <td class='addeditbtn'><button data-toggle="modal" data-target="#editstudentmodal" class='btn btn-sm btn-warning'
+        data-studentname='$student_name' data-studentid='$student_id'>Edit</a></td>
       </tr>
 BUD;
                     }
                     echo <<<DUD
       <tr>
-      <td colspan='6'></td>
-      <td class='addeditbtn'><button data-toggle="modal" data-target="#addclassmodal" class="btn btn-success btn-sm">Add New +</button></td>
+      <td colspan='2'></td>
+      <td class='addeditbtn'><button data-toggle="modal" data-target="#addstudentmodal" class="btn btn-success btn-sm">Add New +</button></td>
       </tr>
 DUD;
                     ?>
@@ -117,23 +86,23 @@ DUD;
     </div>
 </div>
 
-<div class="modal fade" id="addclassmodal" tabindex="-1" role="dialog" aria-labelledby="Add Class">
+<div class="modal fade" id="addstudentmodal" tabindex="-1" role="dialog" aria-labelledby="Add Student">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="addclassmodallabel">Add New Class</h4>
+                <h4 class="modal-title" id="addstudentmodallabel">Add New Student</h4>
             </div>
             <div class="modal-body">
                 <?php
                 require_once "includes/pollform_generator.php";
-                $classnameform = textField("Class Name:", "classname", "Class");
+                $studentnameform = textField("Student Name:", "studentname", "Student");
                 ?>
                 <div class="container">
                     <div class="row">
-                        <div class="col-md-4" id="addclassform">
+                        <div class="col-md-4" id="addstudentform">
                             <form action="">
-                                <?=$classnameform?>
+                                <?=$studentnameform?>
                                 <button class='btn btn-primary' type="submit">Submit</button>
                             </form>
                         </div>
@@ -144,24 +113,24 @@ DUD;
     </div>
 </div>
 
-<div class="modal fade" id="editclassmodal" tabindex="-1" role="dialog" aria-labelledby="Edit Class">
+<div class="modal fade" id="editstudentmodal" tabindex="-1" role="dialog" aria-labelledby="Edit Student">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="editclassmodallabel">Edit Class</h4>
+                <h4 class="modal-title" id="editstudentmodallabel">Edit Student</h4>
             </div>
             <div class="modal-body">
                 <?php
-                    require_once "includes/pollform_generator.php";
-                    $classnameform = textField("Class Name:", "classnameedit", "");
+                require_once "includes/pollform_generator.php";
+                $studentnameform = textField("Student Name:", "studentnameedit", "");
                 ?>
                 <div class="container">
                     <div class="row">
-                        <div class="col-md-4" id="editclassform">
+                        <div class="col-md-4" id="editstudentform">
                             <form action=''>
-                                <?=$classnameform?>
-                                <?="<input type='hidden' name='classidedit' id='classidedit' required>"?><br>
+                                <?=$studentnameform?>
+                                <?="<input type='hidden' name='studentidedit' id='studentidedit' required>"?><br>
                                 <button class='btn btn-primary' type="submit">Submit</button>
                             </form>
                         </div>
@@ -178,16 +147,16 @@ DUD;
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
         integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
         crossorigin="anonymous"></script>
-<script type="text/javascript" src="add_class_handler.js"></script>
-<script type="text/javascript" src="edit_class_handler.js"></script>
+<script type="text/javascript" src="add_student_handler.js"></script>
+<script type="text/javascript" src="edit_student_handler.js"></script>
 <script>
-    $('#editclassmodal').on('show.bs.modal', function(event){
+    $('#editstudentmodal').on('show.bs.modal', function(event){
         var button = $(event.relatedTarget);
-        var classid = button.data("classid");
-        var classname = button.data("classname");
+        var studentid = button.data("studentid");
+        var studentname = button.data("studentname");
         var modal = $(this);
-        modal.find("#classnameedit").val(classname);
-        modal.find("#classidedit").val(classid);
+        modal.find("#studentnameedit").val(studentname);
+        modal.find("#studentidedit").val(studentid);
     });
 </script>
 </body>
