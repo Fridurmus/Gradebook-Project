@@ -126,16 +126,18 @@ DUD;
                 <div class="container">
                     <div class="row">
                         <div class="col-md-4" id="addgradeform">
-                            <form action="">
+                            <form id="addassignform" action="">
                                 <?=$assignnameform?>
                                 <?=$gradeearnform?>
                                 <?=$maxgradeform?>
                                 <?="<input type='hidden' id='classidadd' name='classidadd' value=$classid required>"?><br>
-                                <button class='btn btn-primary' type="submit">Submit</button>
                             </form>
                         </div>
                     </div>
                 </div>
+            </div>
+            <div class="modal-footer">
+                <button class='btn btn-primary' form="addassignform" type="submit">Submit</button>
             </div>
         </div>
     </div>
@@ -157,16 +159,18 @@ DUD;
                 <div class="container">
                     <div class="row">
                         <div class="col-md-4" id="editgradeform">
-                            <form action=''>
+                            <form id="editassignform" action=''>
                                 <?=$assignnameform?>
                                 <?=$gradeearnform?>
                                 <?=$maxgradeform?>
                                 <?="<input type='hidden' id='assignidedit' name='assignidedit' required>"?><br>
-                                <button class='btn btn-primary' type="submit">Submit</button>
                             </form>
                         </div>
                     </div>
                 </div>
+            </div>
+            <div class="modal-footer">
+                <button class='btn btn-primary' form="editassignform" type="submit">Submit</button>
             </div>
         </div>
     </div>

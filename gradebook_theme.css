@@ -26,3 +26,7 @@ th, td{
 .addeditbtn{
     text-align: right;
 }
+
+#studentrecname{
+    text-align: center;
+}

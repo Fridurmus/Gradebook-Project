@@ -132,13 +132,15 @@ DUD;
                 <div class="container">
                     <div class="row">
                         <div class="col-md-4" id="addclassform">
-                            <form action="">
+                            <form id="addclassform" action="">
                                 <?=$classnameform?>
-                                <button class='btn btn-primary' type="submit">Submit</button>
                             </form>
                         </div>
                     </div>
                 </div>
+            </div>
+            <div class="modal-footer">
+                <button class='btn btn-primary' form="addclassform" type="submit">Submit</button>
             </div>
         </div>
     </div>
@@ -159,14 +161,16 @@ DUD;
                 <div class="container">
                     <div class="row">
                         <div class="col-md-4" id="editclassform">
-                            <form action=''>
+                            <form id="editclassform" action=''>
                                 <?=$classnameform?>
                                 <?="<input type='hidden' name='classidedit' id='classidedit' required>"?><br>
-                                <button class='btn btn-primary' type="submit">Submit</button>
                             </form>
                         </div>
                     </div>
                 </div>
+            </div>
+            <div class="modal-footer">
+                <button class='btn btn-primary' form="editclassform" type="submit">Submit</button>
             </div>
         </div>
     </div>

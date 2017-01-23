@@ -55,6 +55,7 @@ $studentRows = pdoSelect('SELECT * FROM student');
                         <th>Student Name</th>
                         <th></th>
                         <th></th>
+                        <th></th>
                     </tr>
                     </thead>
                     <tbody>
@@ -64,7 +65,7 @@ $studentRows = pdoSelect('SELECT * FROM student');
                         $student_name = htmlspecialchars($student_name);
                         echo <<<BUD
       <tr>
-      <td colspan='2'>$student_name</td>
+      <td colspan='3'>$student_name</td>
       <td class='addeditbtn'><button data-toggle="modal" data-target="#editstudentmodal" class='btn btn-sm btn-warning'
         data-studentname='$student_name' data-studentid='$student_id'>Edit</a></td>
       </tr>
@@ -72,7 +73,7 @@ BUD;
                     }
                     echo <<<DUD
       <tr>
-      <td colspan='2'></td>
+      <td colspan='3'></td>
       <td class='addeditbtn'><button data-toggle="modal" data-target="#addstudentmodal" class="btn btn-success btn-sm">Add New +</button></td>
       </tr>
 DUD;
@@ -101,13 +102,15 @@ DUD;
                 <div class="container">
                     <div class="row">
                         <div class="col-md-4" id="addstudentform">
-                            <form action="">
+                            <form id="studentaddform" action="">
                                 <?=$studentnameform?>
-                                <button class='btn btn-primary' type="submit">Submit</button>
                             </form>
                         </div>
                     </div>
                 </div>
+            </div>
+            <div class="modal-footer">
+                <button class='btn btn-primary' type="submit">Submit</button>
             </div>
         </div>
     </div>
@@ -125,17 +128,39 @@ DUD;
                 require_once "includes/pollform_generator.php";
                 $studentnameform = textField("Student Name:", "studentnameedit", "");
                 ?>
-                <div class="container">
                     <div class="row">
-                        <div class="col-md-4" id="editstudentform">
-                            <form action=''>
-                                <?=$studentnameform?>
+                        <div id="editstudentform">
+                            <form id='studenteditform' action=''>
+                                <div class="col-md-6 col-md-offset-3">
+                                    <?=$studentnameform?>
+                                </div>
+                                <br>
                                 <?="<input type='hidden' name='studentidedit' id='studentidedit' required>"?><br>
-                                <button class='btn btn-primary' type="submit">Submit</button>
+                                <?PHP
+                                $sqlclass = "SELECT * FROM class";
+                                $classRows = pdoSelect($sqlclass);
+                                foreach($classRows as $classRow){
+                                extract($classRow);
+                                $class_name = htmlspecialchars($class_name);
+                                echo <<<STU
+                                <div class="col-sm-4">
+                                    <div class="checkbox">
+                                        <label>
+                                            <input type="checkbox" value="$class_id">
+                                            <strong>$class_name</strong>
+                                        </label>
+                                    </div>
+                                </div>
+STU;
+                                }
+                                ?>
                             </form>
                         </div>
                     </div>
                 </div>
+            <div class="modal-footer">
+                <button class='btn btn-primary' form="studenteditform" type="submit">Submit</button>
+            </div>
             </div>
         </div>
     </div>
