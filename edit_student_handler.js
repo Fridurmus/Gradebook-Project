@@ -8,7 +8,8 @@ $("#editstudentform").submit(function () {
         return this.value;
     }).get().join();
 
-    $.post("edit_student_processing.php", {studentname : studentname, studentid : studentid, classids : classids}, function () {
+    $.post("edit_student_processing.php", {studentname : studentname, studentid : studentid, classids : classids,
+                                           nonclassids : nonclassids}, function () {
         location.replace("view_students.php");
     });
     event.preventDefault();

@@ -11,17 +11,32 @@ require_once 'includes/database_functions.php';
 $studentid = $_POST['studentid'];
 $studentname = htmlspecialchars($_POST['studentname']);
 $classids = explode(',', $_POST['classids']);
+$nonclassids = explode(',', $_POST['nonclassids']);
+
+$sqlxrefdel = "DELETE FROM student_class
+           WHERE student_id = :studentid";
+
+$vars = array(':studentid'=>$studentid);
+pdoDelete($sqlxrefdel, $vars);
+
+
+
+
+foreach($classids as $classid){
+
+$sqlxref = "INSERT INTO student_class (class_id, student_id)
+            VALUES(:classid, :studentid)";
+
+$vars = array(':classid'=>$classid, ':studentid'=>$studentid);
+
+pdoInsert($sqlxref, $vars);
+            };
+
+
+$vars = array(':studentname'=>$studentname, ':studentid'=>$studentid);
 
 $sql = "UPDATE student
         SET student_name = :studentname
         WHERE student_id = :studentid";
 
-foreach($classids as $class_id){
-$sqlxref = "INSERT INTO student_class (class_id, student_id)
-            VALUES($class_id, $studentid)";
-            };
-
-$vars = array(':studentname'=>$studentname, ':studentid'=>$studentid);
-
 pdoUpdate($sql, $vars);
-pdoInsert($sqlxref, $vars);

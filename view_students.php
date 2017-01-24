@@ -184,13 +184,33 @@ STU;
 <script type="text/javascript" src="add_student_handler.js"></script>
 <script type="text/javascript" src="edit_student_handler.js"></script>
 <script>
-    $('#editstudentmodal').on('show.bs.modal', function(event){
+    $('#editstudentmodal').on('show.bs.modal',  function(event){
+
         var button = $(event.relatedTarget);
         var studentid = button.data("studentid");
         var studentname = button.data("studentname");
+        var studentclasses = [];
+        console.log(button.data("studentclasses"));
+        if(typeof(button.data("studentclasses")) == "number"){
+            var studentclassnum = button.data("studentclasses").toString();
+            studentclasses.push(studentclassnum);
+        }
+        else{
+            studentclasses = button.data("studentclasses").split(',');
+        }
+        console.log("Student Classes Array:" + studentclasses);
         var modal = $(this);
         modal.find("#studentnameedit").val(studentname);
         modal.find("#studentidedit").val(studentid);
+        if(studentclasses[0] != ""){
+            for(i in studentclasses){
+                modal.find("#" + studentclasses[i]).prop("checked", true);
+            }
+        }
+    });
+    $('#editstudentmodal').on('hide.bs.modal', function(){
+        var modal = $(this);
+        modal.find(":checkbox").prop("checked", false);
     });
 </script>
 </body>
