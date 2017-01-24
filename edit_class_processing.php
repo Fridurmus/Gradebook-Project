@@ -22,7 +22,6 @@ pdoDelete($sqlxrefdel, $vars);
 
 
 foreach($studentids as $studentid){
-
     $sqlxref = "INSERT INTO student_class (class_id, student_id)
             VALUES(:classid, :studentid)";
 
