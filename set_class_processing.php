@@ -7,5 +7,6 @@ session_start();
  * Time: 11:15 AM
  */
 $_SESSION['classid'] = $_GET['id'];
-header("Location: view_grades.php"); /* Redirect browser */
+$_SESSION['studentid'] = $_GET['student'];
+header("Location: view_assignments.php"); /* Redirect browser */
 ?>

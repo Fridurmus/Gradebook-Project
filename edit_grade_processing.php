@@ -16,9 +16,18 @@ $maxgrade = $_POST['maxgrade'];
 $classid = $_SESSION['classid'];
 
 $sql = "UPDATE gradebook 
-        SET assign_name = :assignname, grade_earned = :assigngrade, grade_max = :maxgrade
+        SET assign_name = :assignname, grade_max = :maxgrade
         WHERE assign_id = :assignid";
 
-$vars = array(':assignname'=>$assignname, ':assigngrade'=>$assigngrade, ':maxgrade'=>$maxgrade, ':assignid'=>$assignid);
+$vars = array(':assignname'=>$assignname, ':maxgrade'=>$maxgrade, ':assignid'=>$assignid);
 
 pdoUpdate($sql, $vars);
+
+
+$gradesql = "UPDATE grade
+             SET grade_earned = :assigngrade
+             WHERE assign_id = :assignid";
+
+$vars = array(':assigngrade'=>$assigngrade, ':assignid'=>$assignid);
+
+pdoUpdate($gradesql, $vars);

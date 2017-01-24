@@ -1,5 +1,5 @@
 <?php
-    session_start();
+session_start();
 ?>
 <head>
     <title>My Gradebook</title>
@@ -52,6 +52,7 @@ require_once 'includes/database_functions.php';
 
 $total_earned = 0;
 $total_possible = 0;
+$pcnt_total = 0;
 $classid = $_SESSION['classid'];
 $studentid = $_SESSION['studentid'];
 $sql = "SELECT * FROM gradebook WHERE class_id = $classid";
@@ -66,9 +67,9 @@ $gradebookRows = pdoSelect($sql);
                     <thead>
                     <tr>
                         <th>Assignment Name</th>
-                        <th>Grade Earned</th>
+                        <th></th>
+                        <th></th>
                         <th>Possible Grade</th>
-                        <th>Percentage Grade</th>
                         <th></th>
                     </tr>
                     </thead>
@@ -79,20 +80,21 @@ $gradebookRows = pdoSelect($sql);
                         $assign_name = htmlspecialchars($assign_name);
                         $assignsql = "SELECT * FROM grade WHERE assign_id = $assign_id";
                         $gradeRows = pdoSelect($assignsql);
+                        $total_possible = $total_possible + $grade_max;
                         if($gradeRows){
                             extract($gradeRows[0]);
+                            $pcnt_assign = round((($grade_earned / $grade_max) * 100), 2);
+                            $total_earned = $total_earned + $grade_earned;
+                            $pcnt_total = round((($total_earned / $total_possible) * 100), 2);
                         }
-                        else($grade_earned = 0);
-                        $pcnt_assign = round((($grade_earned / $grade_max) * 100), 2);
-                        $total_earned = $total_earned + $grade_earned;
-                        $total_possible = $total_possible + $grade_max;
-                        $pcnt_total = round((($total_earned / $total_possible) * 100), 2);
+                        else{
+                            $grade_earned = 0;
+                        }
+
                         echo <<<BUD
       <tr>
-      <td>$assign_name</td>
-      <td>$grade_earned</td>
+      <td colspan='3'>$assign_name</td>
       <td>$grade_max</td>
-      <td>$pcnt_assign%</td>
       <td class='addeditbtn'><button data-toggle="modal" data-target="#editassignmodal" data-assignid="$assign_id"
                              data-assignname="$assign_name" data-assigngrade="$grade_earned" data-grademax="$grade_max" 
                              class="btn btn-sm btn-warning">Edit</a></td>
@@ -101,8 +103,8 @@ BUD;
                     }
                     echo <<<DUD
       <tr>
-      <td id='overalltext' colspan='3';>Overall:</td>
-      <td>$pcnt_total%</td>
+      <td id='overalltext' colspan='3';>Overall Possible:</td>
+      <td>$total_possible points</td>
       <td class='addeditbtn'><button data-toggle="modal" data-target="#addassignmodal" class="btn btn-success btn-sm">Add New +</a></td>
       </tr>
 DUD;
@@ -125,11 +127,11 @@ DUD;
             </div>
             <div class="modal-body">
                 <?php
-                    require_once "includes/pollform_generator.php";
-                    $assignnameform = textField("Assignment Name:", "assignnameadd", "Assignment");
-                    $gradeearnform = numField("Grade Earned:", "assigngradeadd", "", "", "0");
-                    $maxgradeform = numField("Max Grade:", "maxgradeadd", "", "", "0");
-                    $classid = $_SESSION['classid'];
+                require_once "includes/pollform_generator.php";
+                $assignnameform = textField("Assignment Name:", "assignnameadd", "Assignment");
+                $gradeearnform = numField("Grade Earned:", "assigngradeadd", "", "", "0");
+                $maxgradeform = numField("Max Grade:", "maxgradeadd", "", "", "0");
+                $classid = $_SESSION['classid'];
                 ?>
                 <div class="container">
                     <div class="row">
@@ -160,7 +162,7 @@ DUD;
                 <?php
                 require_once "includes/pollform_generator.php";
                 $assignnameform = textField("Assignment Name:", "assignnameedit", "");
-                $gradeearnform = numField("Grade Earned:", "assigngradeedit", "", "");
+//                $gradeearnform = numField("Grade Earned:", "assigngradeedit", "", "");
                 $maxgradeform = numField("Max Grade:", "maxgradeedit", "", "");
                 ?>
                 <div class="container">
@@ -168,7 +170,7 @@ DUD;
                         <div class="col-md-4" id="editgradeform">
                             <form id="editassignform" action=''>
                                 <?=$assignnameform?>
-                                <?=$gradeearnform?>
+<!--                                <?//=$gradeearnform?>-->
                                 <?=$maxgradeform?>
                                 <?="<input type='hidden' id='assignidedit' name='assignidedit' required>"?><br>
                             </form>

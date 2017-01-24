@@ -14,8 +14,9 @@ $("#editgradeform").submit(function () {
         assigngrade : assigngrade,
         maxgrade : maxgrade,
         assignid : assignid
-    }, function () {
-        location.replace("view_grades.php");
+    }, function (data) {
+        console.log(data);
+        location.replace("view_assignments.php");
     });
     event.preventDefault();
 });

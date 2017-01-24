@@ -1,16 +1,5 @@
 <?PHP
 session_start();
-$_SESSION = array();
-
-if (ini_get("session.use_cookies")) {
-    $params = session_get_cookie_params();
-    setcookie(session_name(), '', time() - 42000,
-        $params["path"], $params["domain"],
-        $params["secure"], $params["httponly"]
-    );
-}
-
-session_destroy();
 ?>
 
 <head>
@@ -71,7 +60,7 @@ $classRows = pdoSelect('SELECT * FROM class');
                         <th>Class Name</th>
                         <th></th>
                         <th></th>
-                        <th>Grade</th>
+                        <th></th>
                         <th></th>
                         <th></th>
                         <th></th>
@@ -88,6 +77,12 @@ $classRows = pdoSelect('SELECT * FROM class');
                         $gradebookRows = pdoSelect("SELECT * FROM gradebook WHERE class_id = $class_id");
                         foreach ($gradebookRows as $gradebookRow) {
                             extract($gradebookRow);
+                            $assignsql = "SELECT * FROM grade WHERE assign_id = $assign_id";
+                            $gradeRows = pdoSelect($assignsql);
+                            if($gradeRows){
+                                extract($gradeRows[0]);
+                            }
+                            else($grade_earned = 0);
                             $total_earned = $total_earned + $grade_earned;
                             $total_possible = $total_possible + $grade_max;
                             $pcnt_total = round((($total_earned / $total_possible) * 100), 2);
@@ -102,9 +97,8 @@ $classRows = pdoSelect('SELECT * FROM class');
                         $studentlist = join(',', $studentlist);
                         echo <<<BUD
       <tr>
-      <td colspan='3'>$class_name</td>
-      <td colspan='2'>$pcnt_total%</td>
-      <td class='addeditbtn'><a href='set_class_processing.php?id=$class_id' class='btn btn-sm btn-primary'>View Grades</a></td>
+      <td colspan='5'>$class_name</td>
+      <td class='addeditbtn'><a href='set_class_processing.php?id=$class_id' class='btn btn-sm btn-primary'>View Assignments</a></td>
       <td class='addeditbtn'><button data-toggle="modal" data-target="#editclassmodal" class='btn btn-sm btn-warning'
         data-classname='$class_name' data-classid='$class_id' data-studentlist='$studentlist'>Edit</a></td>
       </tr>
