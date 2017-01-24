@@ -26,7 +26,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <span class="navbar-brand">Gradebook</span>
+            <a href="index.php"><span class="navbar-brand">Gradebook</span></a>
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->

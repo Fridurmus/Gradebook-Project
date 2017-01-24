@@ -23,7 +23,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <span class="navbar-brand">Gradebook</span>
+            <a href="index.php"><span class="navbar-brand">Gradebook</span></a>
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
@@ -119,7 +119,7 @@ DUD;
                 </div>
             </div>
             <div class="modal-footer">
-                <button class='btn btn-primary' type="submit">Submit</button>
+                <button class='btn btn-primary' form="studentaddform" type="submit">Submit</button>
             </div>
         </div>
     </div>
