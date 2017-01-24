@@ -11,7 +11,6 @@ require_once 'includes/database_functions.php';
 $studentid = $_POST['studentid'];
 $studentname = htmlspecialchars($_POST['studentname']);
 $classids = explode(',', $_POST['classids']);
-$nonclassids = explode(',', $_POST['nonclassids']);
 
 $sqlxrefdel = "DELETE FROM student_class
            WHERE student_id = :studentid";

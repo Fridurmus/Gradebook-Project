@@ -91,13 +91,21 @@ $classRows = pdoSelect('SELECT * FROM class');
                             $total_possible = $total_possible + $grade_max;
                             $pcnt_total = round((($total_earned / $total_possible) * 100), 2);
                         }
+                        $studentlist = [];
+                        $classStudents = pdoSelect("SELECT student_id 
+                                                     FROM student_class
+                                                     WHERE class_id = $class_id");
+                        foreach($classStudents as $classStudent){
+                            array_push($studentlist, join(',', $classStudent));
+                        }
+                        $studentlist = join(',', $studentlist);
                         echo <<<BUD
       <tr>
       <td colspan='3'>$class_name</td>
       <td colspan='2'>$pcnt_total%</td>
       <td class='addeditbtn'><a href='set_class_processing.php?id=$class_id' class='btn btn-sm btn-primary'>View Grades</a></td>
       <td class='addeditbtn'><button data-toggle="modal" data-target="#editclassmodal" class='btn btn-sm btn-warning'
-        data-classname='$class_name' data-classid='$class_id'>Edit</a></td>
+        data-classname='$class_name' data-classid='$class_id' data-studentlist='$studentlist'>Edit</a></td>
       </tr>
 BUD;
                     }
@@ -160,10 +168,29 @@ DUD;
                 ?>
                 <div class="container">
                     <div class="row">
-                        <div class="col-md-4" id="editclassform">
+                        <div class="col-md-4">
                             <form id="editclassform" action=''>
                                 <?=$classnameform?>
                                 <?="<input type='hidden' name='classidedit' id='classidedit' required>"?><br>
+                                <?PHP
+                                $sqlstudent = "SELECT * FROM student";
+                                $studentRows = pdoSelect($sqlstudent);
+
+                                foreach($studentRows as $studentRow){
+                                    extract($studentRow);
+                                    $student_name = htmlspecialchars($student_name);
+                                    echo <<<STU
+                                    <div class="col-sm-4">
+                                        <div class="checkbox">
+                                            <label>
+                                                <input type="checkbox" id="$student_id" value="$student_id">
+                                                <strong>$student_name</strong>
+                                            </label>
+                                        </div>
+                                    </div>
+STU;
+                                }
+                                ?>
                             </form>
                         </div>
                     </div>
@@ -192,6 +219,25 @@ DUD;
         var modal = $(this);
         modal.find("#classnameedit").val(classname);
         modal.find("#classidedit").val(classid);
+        var studentlist = [];
+        console.log(button.data("studentlist"));
+        if(typeof(button.data("studentlist")) == "number"){
+            var studentlistnum = button.data("studentlist").toString();
+            studentlist.push(studentlistnum);
+        }
+        else{
+            studentlist = button.data("studentlist").split(',');
+        }
+        console.log("Class Students Array:" + studentlist);
+        if(studentlist[0] != ""){
+            for(i in studentlist){
+                modal.find("#" + studentlist[i]).prop("checked", true);
+            }
+        }
+    });
+    $('#editclassmodal').on('hide.bs.modal', function(){
+        var modal = $(this);
+        modal.find(":checkbox").prop("checked", false);
     });
 </script>
 </body>
