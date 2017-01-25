@@ -89,9 +89,8 @@ $classRows = pdoSelect('SELECT * FROM class');
 //                        }
                         echo <<<BUD
       <tr>
-      <td colspan='5'>$class_name</td>
-      <td class='addeditbtn'><a href='set_class_processing.php?id=$class_id' class='btn btn-sm btn-primary'>View Assignments</a></td>
-      <td class='addeditbtn'><a href='set_class_edit_processing.php?id=$class_id' class='btn btn-sm btn-warning'>Edit</a></td>
+      <td colspan='6'>$class_name</td>
+      <td class='addeditbtn'><a href='set_class_edit_processing.php?id=$class_id' class='btn btn-sm btn-primary'>Manage</a></td>
       </tr>
 BUD;
                     }

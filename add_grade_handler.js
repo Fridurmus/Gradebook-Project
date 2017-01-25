@@ -13,7 +13,7 @@ $("#addgradeform").submit(function () {
         classid : classid
     }, function (data) {
         console.log(data);
-        location.replace("view_assignments.php");
+        location.replace("edit_class.php");
     });
     event.preventDefault();
 });

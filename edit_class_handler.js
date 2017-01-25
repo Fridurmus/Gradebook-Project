@@ -1,10 +1,11 @@
 /**
  * Created by Sean Davis on 1/20/2017.
  */
-$("#editclassform").submit(function () {
+$("#editclassform").submit(function (event) {
+    event.preventDefault();
     var classname = $("#classnameedit").val();
     var classid = $("#classidedit").val();
-    var studentids = $('#editclassform [type="checkbox"]:checked').map(function () {
+    var studentids = $(".editclasscheck:checked").map(function () {
         return this.value;
     }).get().join();
 
@@ -12,5 +13,4 @@ $("#editclassform").submit(function () {
         console.log("Errors:" + data);
         location.replace("index.php");
     });
-    event.preventDefault();
 });

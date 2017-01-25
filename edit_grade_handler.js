@@ -4,7 +4,8 @@
 /**
  * Created by Sean Davis on 1/20/2017.
  */
-$("#editgradeform").submit(function () {
+$("#editgradeform").submit(function (event) {
+    event.preventDefault();
     var assignname = $("#assignnameedit").val();
     var assigngrade = $("#assigngradeedit").val();
     var maxgrade = $("#maxgradeedit").val();
@@ -16,7 +17,6 @@ $("#editgradeform").submit(function () {
         assignid : assignid
     }, function (data) {
         console.log(data);
-        location.replace("view_assignments.php");
+        location.replace("edit_class.php");
     });
-    event.preventDefault();
 });
