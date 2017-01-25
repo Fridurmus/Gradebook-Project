@@ -7,12 +7,10 @@
 $("#editgradeform").submit(function (event) {
     event.preventDefault();
     var assignname = $("#assignnameedit").val();
-    var assigngrade = $("#assigngradeedit").val();
     var maxgrade = $("#maxgradeedit").val();
     var assignid = $("#assignidedit").val();
     $.post("edit_grade_processing.php", {
         assignname : assignname,
-        assigngrade : assigngrade,
         maxgrade : maxgrade,
         assignid : assignid
     }, function (data) {

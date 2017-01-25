@@ -38,6 +38,9 @@ session_start();
 </nav>
 <body>
 <div class="container">
+    <div id="messagebox">
+
+    </div>
     <div class="row">
         <div class="col-md-6 col-md-offset-3">
             <form id="editclassform" action=''>
@@ -256,7 +259,6 @@ DUD;
         var modal = $(this);
         modal.find("#assignidedit").val(assignid);
         modal.find("#assignnameedit").val(assignname);
-        modal.find("#assigngradeedit").val(assigngrade);
         modal.find("#maxgradeedit").val(maxgrade);
     });
 </script>

@@ -11,7 +11,6 @@ require_once 'includes/database_functions.php';
 
 $assignid = $_POST['assignid'];
 $assignname = htmlspecialchars($_POST['assignname']);
-$assigngrade = $_POST['assigngrade'];
 $maxgrade = $_POST['maxgrade'];
 $classid = $_SESSION['classid'];
 
@@ -24,10 +23,10 @@ $vars = array(':assignname'=>$assignname, ':maxgrade'=>$maxgrade, ':assignid'=>$
 pdoUpdate($sql, $vars);
 
 
-$gradesql = "UPDATE grade
-             SET grade_earned = :assigngrade
-             WHERE assign_id = :assignid";
-
-$vars = array(':assigngrade'=>$assigngrade, ':assignid'=>$assignid);
-
-pdoUpdate($gradesql, $vars);
+//$gradesql = "UPDATE grade
+//             SET grade_earned = :assigngrade
+//             WHERE assign_id = :assignid";
+//
+//$vars = array(':assigngrade'=>$assigngrade, ':assignid'=>$assignid);
+//
+//pdoUpdate($gradesql, $vars);
