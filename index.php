@@ -75,32 +75,23 @@ $classRows = pdoSelect('SELECT * FROM class');
                         extract($classRow);
                         $class_name = htmlspecialchars($class_name);
                         $gradebookRows = pdoSelect("SELECT * FROM gradebook WHERE class_id = $class_id");
-                        foreach ($gradebookRows as $gradebookRow) {
-                            extract($gradebookRow);
-                            $assignsql = "SELECT * FROM grade WHERE assign_id = $assign_id";
-                            $gradeRows = pdoSelect($assignsql);
-                            if($gradeRows){
-                                extract($gradeRows[0]);
-                            }
-                            else($grade_earned = 0);
-                            $total_earned = $total_earned + $grade_earned;
-                            $total_possible = $total_possible + $grade_max;
-                            $pcnt_total = round((($total_earned / $total_possible) * 100), 2);
-                        }
-                        $studentlist = [];
-                        $classStudents = pdoSelect("SELECT student_id 
-                                                     FROM student_class
-                                                     WHERE class_id = $class_id");
-                        foreach($classStudents as $classStudent){
-                            array_push($studentlist, join(',', $classStudent));
-                        }
-                        $studentlist = join(',', $studentlist);
+//                        foreach ($gradebookRows as $gradebookRow) {
+//                            extract($gradebookRow);
+//                            $assignsql = "SELECT * FROM grade WHERE assign_id = $assign_id";
+//                            $gradeRows = pdoSelect($assignsql);
+//                            if($gradeRows){
+//                                extract($gradeRows[0]);
+//                            }
+//                            else($grade_earned = 0);
+//                            $total_earned = $total_earned + $grade_earned;
+//                            $total_possible = $total_possible + $grade_max;
+//                            $pcnt_total = round((($total_earned / $total_possible) * 100), 2);
+//                        }
                         echo <<<BUD
       <tr>
       <td colspan='5'>$class_name</td>
       <td class='addeditbtn'><a href='set_class_processing.php?id=$class_id' class='btn btn-sm btn-primary'>View Assignments</a></td>
-      <td class='addeditbtn'><button data-toggle="modal" data-target="#editclassmodal" class='btn btn-sm btn-warning'
-        data-classname='$class_name' data-classid='$class_id' data-studentlist='$studentlist'>Edit</a></td>
+      <td class='addeditbtn'><a href='set_class_edit_processing.php?id=$class_id' class='btn btn-sm btn-warning'>Edit</a></td>
       </tr>
 BUD;
                     }
@@ -149,54 +140,6 @@ DUD;
     </div>
 </div>
 
-<div class="modal fade" id="editclassmodal" tabindex="-1" role="dialog" aria-labelledby="Edit Class">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="editclassmodallabel">Edit Class</h4>
-            </div>
-            <div class="modal-body">
-                <?php
-                    require_once "includes/pollform_generator.php";
-                    $classnameform = textField("Class Name:", "classnameedit", "");
-                ?>
-                <div class="container">
-                    <div class="row">
-                        <div class="col-md-4">
-                            <form id="editclassform" action=''>
-                                <?=$classnameform?>
-                                <?="<input type='hidden' name='classidedit' id='classidedit' required>"?><br>
-                                <?PHP
-                                $sqlstudent = "SELECT * FROM student";
-                                $studentRows = pdoSelect($sqlstudent);
-
-                                foreach($studentRows as $studentRow){
-                                    extract($studentRow);
-                                    $student_name = htmlspecialchars($student_name);
-                                    echo <<<STU
-                                    <div class="col-sm-4">
-                                        <div class="checkbox">
-                                            <label>
-                                                <input type="checkbox" id="$student_id" value="$student_id">
-                                                <strong>$student_name</strong>
-                                            </label>
-                                        </div>
-                                    </div>
-STU;
-                                }
-                                ?>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class='btn btn-primary' form="editclassform" type="submit">Submit</button>
-            </div>
-        </div>
-    </div>
-</div>
 
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
@@ -206,33 +149,33 @@ STU;
         crossorigin="anonymous"></script>
 <script type="text/javascript" src="add_class_handler.js"></script>
 <script type="text/javascript" src="edit_class_handler.js"></script>
-<script>
-    $('#editclassmodal').on('show.bs.modal', function(event){
-        var button = $(event.relatedTarget);
-        var classid = button.data("classid");
-        var classname = button.data("classname");
-        var modal = $(this);
-        modal.find("#classnameedit").val(classname);
-        modal.find("#classidedit").val(classid);
-        var studentlist = [];
-        console.log(button.data("studentlist"));
-        if(typeof(button.data("studentlist")) == "number"){
-            var studentlistnum = button.data("studentlist").toString();
-            studentlist.push(studentlistnum);
-        }
-        else{
-            studentlist = button.data("studentlist").split(',');
-        }
-        console.log("Class Students Array:" + studentlist);
-        if(studentlist[0] != ""){
-            for(i in studentlist){
-                modal.find("#" + studentlist[i]).prop("checked", true);
-            }
-        }
-    });
-    $('#editclassmodal').on('hide.bs.modal', function(){
-        var modal = $(this);
-        modal.find(":checkbox").prop("checked", false);
-    });
-</script>
+<!--<script>-->
+<!--    $('#editclassmodal').on('show.bs.modal', function(event){-->
+<!--        var button = $(event.relatedTarget);-->
+<!--        var classid = button.data("classid");-->
+<!--        var classname = button.data("classname");-->
+<!--        var modal = $(this);-->
+<!--        modal.find("#classnameedit").val(classname);-->
+<!--        modal.find("#classidedit").val(classid);-->
+<!--        var studentlist = [];-->
+<!--        console.log(button.data("studentlist"));-->
+<!--        if(typeof(button.data("studentlist")) == "number"){-->
+<!--            var studentlistnum = button.data("studentlist").toString();-->
+<!--            studentlist.push(studentlistnum);-->
+<!--        }-->
+<!--        else{-->
+<!--            studentlist = button.data("studentlist").split(',');-->
+<!--        }-->
+<!--        console.log("Class Students Array:" + studentlist);-->
+<!--        if(studentlist[0] != ""){-->
+<!--            for(i in studentlist){-->
+<!--                modal.find("#" + studentlist[i]).prop("checked", true);-->
+<!--            }-->
+<!--        }-->
+<!--    });-->
+<!--    $('#editclassmodal').on('hide.bs.modal', function(){-->
+<!--        var modal = $(this);-->
+<!--        modal.find(":checkbox").prop("checked", false);-->
+<!--    });-->
+<!--</script>-->
 </body>
