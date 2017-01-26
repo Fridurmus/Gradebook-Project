@@ -9,7 +9,8 @@ $("#editclassform").submit(function (event) {
         return this.value;
     }).get().join();
     var successmess = $("<div class='alert alert-success alert-dismissable fade'>"+
-        "<strong>Class was updated successfully.</strong><a href='index.php' class='alert-link'>Click here to return to the class list.</a>"+
+        "<strong>Class was updated successfully.</strong> " +
+        "<span><a href='index.php' class='alert-link'>Click here to return to the class list.</a></span>"+
         "<button type='button' href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</button>"+
     "</div>");
     var errormess = $("<div class='alert alert-danger alert-dismissable fade'>"+

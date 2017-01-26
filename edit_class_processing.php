@@ -19,7 +19,7 @@ $vars = array(':classid'=>$classid);
 
 $deleteResult = pdoDelete($sqlxrefdel, $vars);
 
-$inputResults = [];
+$insertResult = true;
 
 
 foreach($studentids as $studentid){
@@ -28,7 +28,11 @@ foreach($studentids as $studentid){
 
     $vars = array(':classid'=>$classid, ':studentid'=>$studentid);
 
-    array_push($inputResults, pdoInsert($sqlxref, $vars));
+    $inputResult = pdoInsert($sqlxref, $vars);
+
+    if($inputResult === false){
+        $insertResult = false;
+    }
 };
 
 $sql = "UPDATE class 
@@ -39,19 +43,9 @@ $vars = array(':classname'=>$classname, ':classid'=>$classid);
 
 $updateResult = pdoUpdate($sql, $vars);
 
-if($deleteResult && $updateResult){
+if($deleteResult && $updateResult && $insertResult){
     echo '|s';
 }
-
 else{
     echo '|e';
-}
-
-foreach ($inputResults as $inputResult){
-    if($inputResult){
-        echo '|s';
-    }
-    else{
-        echo '|e';
-    }
 }

@@ -20,9 +20,14 @@ $sql = "UPDATE gradebook
 
 $vars = array(':assignname'=>$assignname, ':maxgrade'=>$maxgrade, ':assignid'=>$assignid);
 
-pdoUpdate($sql, $vars);
+$updateResult = pdoUpdate($sql, $vars);
 
-
+if($updateResult){
+    echo '|s';
+}
+else {
+    echo '|e';
+}
 //$gradesql = "UPDATE grade
 //             SET grade_earned = :assigngrade
 //             WHERE assign_id = :assignid";
