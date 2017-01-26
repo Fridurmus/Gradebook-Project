@@ -14,4 +14,11 @@ $sql = "INSERT INTO student (student_name)
 
 $vars = array(':student_name'=>$studentname);
 
-pdoInsert($sql, $vars);
+$insertResult = pdoInsert($sql, $vars);
+
+if($insertResult){
+    echo '|s';
+}
+else{
+    echo '|e';
+}

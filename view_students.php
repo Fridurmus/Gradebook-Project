@@ -48,6 +48,9 @@ $studentRows = pdoSelect('SELECT * FROM student');
 ?>
 <div id="classtable">
     <div class="container maintable">
+        <div id="messagebox">
+
+        </div>
         <div class="row">
             <div class="col-md-4 col-md-offset-4">
                 <table class="table table-hover">
