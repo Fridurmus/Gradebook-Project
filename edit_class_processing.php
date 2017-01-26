@@ -21,18 +21,19 @@ $deleteResult = pdoDelete($sqlxrefdel, $vars);
 
 $insertResult = true;
 
+if(count($studentids) > 0){
+    foreach($studentids as $studentid){
+        $sqlxref = "INSERT INTO student_class (class_id, student_id)
+                VALUES(:classid, :studentid)";
 
-foreach($studentids as $studentid){
-    $sqlxref = "INSERT INTO student_class (class_id, student_id)
-            VALUES(:classid, :studentid)";
+        $vars = array(':classid'=>$classid, ':studentid'=>$studentid);
 
-    $vars = array(':classid'=>$classid, ':studentid'=>$studentid);
+        $inputResult = pdoInsert($sqlxref, $vars);
 
-    $inputResult = pdoInsert($sqlxref, $vars);
-
-    if($inputResult === false){
-        $insertResult = false;
-    }
+        if($inputResult === false){
+            $insertResult = false;
+        }
+    };
 };
 
 $sql = "UPDATE class 

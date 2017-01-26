@@ -17,6 +17,7 @@ $("#addclassform").submit(function () {
     }
 
     $.post("add_class_processing.php", classname, function (data) {
+        $(".alert-dismissable").alert('close');
         console.log(data);
         var resultstate = true;
         var resarray = data.split('|');

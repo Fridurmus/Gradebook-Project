@@ -36,14 +36,15 @@ session_start();
         </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->
 </nav>
+
 <body>
 <div class="container">
+    <form id="editclassform" action=''>
     <div id="messagebox">
 
     </div>
     <div class="row">
         <div class="col-md-6 col-md-offset-3">
-            <form id="editclassform" action=''>
                 <?PHP
                 require_once 'includes/database_functions.php';
                 require_once "includes/pollform_generator.php";
@@ -164,12 +165,9 @@ DUD;
             </table>
         </div>
     </div>
+    </form>
 </div>
-</div>
-</div>
-
-        </form>
-    </div>
+<div class="container">
     <div class="row">
         <div class="col-md-2 col-md-offset-6">
             <hr>
@@ -177,8 +175,6 @@ DUD;
         </div>
     </div>
 </div>
-</div>
-
 
 <div class="modal fade" id="addassignmodal" tabindex="-1" role="dialog" aria-labelledby="Add Assignment">
     <div class="modal-dialog" role="document">

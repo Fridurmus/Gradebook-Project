@@ -17,6 +17,7 @@ $("#addstudentform").submit(function () {
     }
 
     $.post("add_student_processing.php", studentname, function (data) {
+        $(".alert-dismissable").alert('close');
         console.log(data);
         var resultstate = true;
         var resarray = data.split('|');

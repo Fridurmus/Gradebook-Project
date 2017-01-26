@@ -22,6 +22,7 @@ $("#editstudentform").submit(function () {
 
     $.post("edit_student_processing.php", {studentname : studentname, studentid : studentid, classids : classids
                                            }, function (data) {
+        $(".alert-dismissable").alert('close');
         console.log(data);
         var resultstate = true;
         var resarray = data.split('|');
