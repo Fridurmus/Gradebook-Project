@@ -10,7 +10,7 @@ $("#editgradeform").submit(function (event) {
     var maxgrade = $("#maxgradeedit").val();
     var assignid = $("#assignidedit").val();
     var successmess = $("<div class='alert alert-success alert-dismissable fade'>"+
-        "<strong>Grade was updated successfully.</strong>"+
+        "<strong>Assignment was updated successfully.</strong>"+
         "<button type='button' href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</button>"+
         "</div>");
     var errormess = $("<div class='alert alert-danger alert-dismissable fade'>"+

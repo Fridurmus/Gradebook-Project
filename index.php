@@ -52,6 +52,9 @@ $classRows = pdoSelect('SELECT * FROM class');
 ?>
 <div id="classtable">
     <div class="container maintable">
+        <div id="messagebox">
+
+        </div>
         <div class="row">
             <div class="col-md-6 col-md-offset-3">
                 <table class="table table-hover">
@@ -147,7 +150,6 @@ DUD;
         integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
         crossorigin="anonymous"></script>
 <script type="text/javascript" src="add_class_handler.js"></script>
-<script type="text/javascript" src="edit_class_handler.js"></script>
 <!--<script>-->
 <!--    $('#editclassmodal').on('show.bs.modal', function(event){-->
 <!--        var button = $(event.relatedTarget);-->

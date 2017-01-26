@@ -16,4 +16,11 @@ $sql = "INSERT INTO gradebook (class_id, assign_name, grade_max)
 
 $vars = array(':class_id'=>$classid, ':assign_name'=>$assignname, ':grade_max'=>$maxgrade);
 
-pdoInsert($sql, $vars);
+$insertResult = pdoInsert($sql, $vars);
+
+if($insertResult){
+    echo '|s';
+}
+else {
+    echo '|e';
+}

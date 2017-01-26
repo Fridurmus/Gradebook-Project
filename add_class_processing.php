@@ -14,4 +14,11 @@ $sql = "INSERT INTO class (class_name)
 
 $vars = array(':class_name'=>$classname);
 
-pdoInsert($sql, $vars);
+;$insertResult = pdoInsert($sql, $vars);
+
+if($insertResult){
+    echo '|s';
+}
+else {
+    echo '|e';
+}
