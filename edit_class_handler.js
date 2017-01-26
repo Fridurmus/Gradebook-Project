@@ -9,16 +9,33 @@ $("#editclassform").submit(function (event) {
         return this.value;
     }).get().join();
     var successmess = $("<div class='alert alert-success alert-dismissable fade'>"+
-        "<a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>"+
-    "<strong>Success!</strong> Indicates a successful or positive action."+
+        "<strong>Class was updated successfully.</strong><a href='index.php' class='alert-link'>Click here to return to the class list.</a>"+
+        "<button type='button' href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</button>"+
     "</div>");
+    var errormess = $("<div class='alert alert-danger alert-dismissable fade'>"+
+        "<a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>"+
+        "<strong>Update failed.</strong> Please contact support."+
+        "</div>");
     function showAlert(){
         $(".alert").addClass("in");
     }
 
     $.post("edit_class_processing.php", {classname : classname, classid : classid, studentids : studentids}, function (data) {
-        console.log("Errors:" + data);
-        $("#messagebox").prepend(successmess);
+        console.log(data);
+        var resultstate = true;
+        var resarray = data.split('|');
+        for(var i = 1; i < resarray.length; i++){
+            console.log(resarray[i]);
+            if(resarray[i] != 's'){
+                resultstate = false;
+            }
+        }
+        if(resultstate){
+            $("#messagebox").prepend(successmess);
+        }
+        else{
+            $("#messagebox").prepend(errormess);
+        }
         window.setTimeout(function () {
             showAlert();
         }, 50);
