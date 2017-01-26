@@ -128,7 +128,7 @@ DUD;
                 <div class="container">
                     <div class="row">
                         <div class="col-md-4" id="addclassform">
-                            <form id="addclassform" action="">
+                            <form id="addclassformhandle" action="">
                                 <?=$classnameform?>
                             </form>
                         </div>
@@ -136,7 +136,7 @@ DUD;
                 </div>
             </div>
             <div class="modal-footer">
-                <button class='btn btn-primary' form="addclassform" type="submit">Submit</button>
+                <button class='btn btn-primary' form="addclassformhandle" value="Submit" type="submit">Submit</button>
             </div>
         </div>
     </div>
