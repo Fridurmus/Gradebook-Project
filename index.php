@@ -78,18 +78,6 @@ $classRows = pdoSelect('SELECT * FROM class');
                         extract($classRow);
                         $class_name = htmlspecialchars($class_name);
                         $gradebookRows = pdoSelect("SELECT * FROM gradebook WHERE class_id = $class_id");
-//                        foreach ($gradebookRows as $gradebookRow) {
-//                            extract($gradebookRow);
-//                            $assignsql = "SELECT * FROM grade WHERE assign_id = $assign_id";
-//                            $gradeRows = pdoSelect($assignsql);
-//                            if($gradeRows){
-//                                extract($gradeRows[0]);
-//                            }
-//                            else($grade_earned = 0);
-//                            $total_earned = $total_earned + $grade_earned;
-//                            $total_possible = $total_possible + $grade_max;
-//                            $pcnt_total = round((($total_earned / $total_possible) * 100), 2);
-//                        }
                         echo <<<BUD
       <tr>
       <td colspan='6'>$class_name</td>
@@ -150,33 +138,4 @@ DUD;
         integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
         crossorigin="anonymous"></script>
 <script type="text/javascript" src="add_class_handler.js"></script>
-<!--<script>-->
-<!--    $('#editclassmodal').on('show.bs.modal', function(event){-->
-<!--        var button = $(event.relatedTarget);-->
-<!--        var classid = button.data("classid");-->
-<!--        var classname = button.data("classname");-->
-<!--        var modal = $(this);-->
-<!--        modal.find("#classnameedit").val(classname);-->
-<!--        modal.find("#classidedit").val(classid);-->
-<!--        var studentlist = [];-->
-<!--        console.log(button.data("studentlist"));-->
-<!--        if(typeof(button.data("studentlist")) == "number"){-->
-<!--            var studentlistnum = button.data("studentlist").toString();-->
-<!--            studentlist.push(studentlistnum);-->
-<!--        }-->
-<!--        else{-->
-<!--            studentlist = button.data("studentlist").split(',');-->
-<!--        }-->
-<!--        console.log("Class Students Array:" + studentlist);-->
-<!--        if(studentlist[0] != ""){-->
-<!--            for(i in studentlist){-->
-<!--                modal.find("#" + studentlist[i]).prop("checked", true);-->
-<!--            }-->
-<!--        }-->
-<!--    });-->
-<!--    $('#editclassmodal').on('hide.bs.modal', function(){-->
-<!--        var modal = $(this);-->
-<!--        modal.find(":checkbox").prop("checked", false);-->
-<!--    });-->
-<!--</script>-->
 </body>

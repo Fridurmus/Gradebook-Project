@@ -58,6 +58,9 @@ $student_name = htmlspecialchars($student_name);
 ?>
 <h1 id="studentrecname"><?= $student_name ?></h1>
 <div class="container">
+    <div id="#messagebox">
+
+    </div>
     <div class="row" id="classoptions">
         <div class="col-md-6 col-md-offset-3">
             <?PHP
@@ -154,17 +157,17 @@ LUP;
                           <td>$grade_max</td>
                           <td></td>
                           <td>$pcnt_assign%</td>
-                          <td class='addeditbtn'><button type="button" data-toggle="modal" data-target="#editassignmodal" data-assignid="$assign_id"
+                          <td class='addeditbtn'><button type="button" data-toggle="modal" data-target="#editrecordmodal" data-assignid="$assign_id"
                                                  data-assignname="$assign_name" data-grademax="$grade_max" 
+                                                 data-classid = "$class_id" data-gradeearn="$grade_earned" 
                                                  class="btn btn-sm btn-warning">Edit</td>
                           </tr>
 BUD;
                     }
                     echo <<<DUD
                           <tr>
-                          <td id='overalltext' colspan='6'>Overall:</td>
+                          <td id='overalltext' colspan='7'>Overall:</td>
                           <td>$pcnt_total%</td>
-                          <td class='addeditbtn'><button type="button" data-toggle="modal" data-target="#addassignmodal" class="btn btn-success btn-sm">Add New +</a></td>
                           </tr>
                           </tbody>
                         </table>
@@ -173,8 +176,39 @@ BUD;
 DUD;
                         }
                     }
-                                    ?>
-
+                ?>
+    </div>
+</div>
+<div class="modal fade" id="editrecordmodal" tabindex="-1" role="dialog" aria-labelledby="Edit Record">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="editrecordmodallabel">Edit Grade</h4>
+            </div>
+            <div class="modal-body">
+                <?php
+                require_once "includes/pollform_generator.php";
+                $editrecordform = numField("New grade:", "editrecordearn", "", "", "0");
+                ?>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-4" id="addstudentform">
+                            <form id="editrecordform" action="">
+                                <?=$editrecordform?>
+                            </form>
+                            <?="<input type='hidden' id='recordclassedit' name='recordclassedit' required>"?><br>
+                            <?="<input type='hidden' id='recordassignedit' name='recordassignedit' required>"?><br>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class='btn btn-primary' form="editrecordform" type="submit">Submit</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 
@@ -185,4 +219,17 @@ DUD;
         integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
         crossorigin="anonymous"></script>
 <script type="text/javascript" src="record_view_handler.js"></script>
+<script type="text/javascript" src="edit_record_handler.js"></script>
+<script>
+    $('#editrecordmodal').on('show.bs.modal', function(event){
+        var button = $(event.relatedTarget);
+        var gradeearn = button.data("gradeearn");
+        var assignid = button.data("assignid");
+        var classid = button.data("classid");
+        var modal = $(this);
+        modal.find("#editrecordearn").val(gradeearn);
+        modal.find("#recordclassedit").val(classid);
+        modal.find("#recordassignedit").val(assignid);
+    });
+</script>
 </body>
