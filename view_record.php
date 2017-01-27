@@ -101,7 +101,7 @@ $student_name = htmlspecialchars($student_name);
                 if (in_array($class_id, $student_classes)){
                     $class_name = htmlspecialchars($class_name);
                     echo <<<LUP
-                    <div id=$class_id class='hidethis'>
+                    <div id=$class_id class='hidethis hideable'>
                      <div class="col-md-8 col-md-offset-2">
                          <h4 id="studentlisttitle">$class_name Assignment List</h4>
                          <hr>

@@ -1,12 +1,11 @@
-$('.hidethis').hide();
 $(document).ready(function(){
     var current = $('#classtoggle').val();
-    $('#' + current).show();
+    $('#' + current).removeClass('hidethis');
     $(function() {
         $('#classtoggle').change(function(){
             console.log($('#classtoggle').val());
-            $('.hidethis').hide();
-            $('#' + $(this).val()).show();
+            $('.hideable').addClass('hidethis');
+            $('#' + $(this).val()).removeClass('hidethis');
         });
     });
 });

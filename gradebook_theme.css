@@ -20,3 +20,6 @@
     text-align: center;
     text-decoration: none;
 }
+.hidethis {
+    display: none;
+}
