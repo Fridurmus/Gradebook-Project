@@ -56,43 +56,35 @@ $studentRow = pdoSelect($sql);
 extract($studentRow[0]);
 $student_name = htmlspecialchars($student_name);
 ?>
-    <h1 id="studentrecname"><?=$student_name?></h1>
-    <div class="row" id="classoptions">
-        <div class="col-md-6 col-md-offset-3">
-<?PHP
-$sqlclass = "SELECT * FROM class";
-$classRows = pdoSelect($sqlclass);
-$rowCount = 0;
-    foreach($classRows as $classRow){
-        extract($classRow);
-        $class_name = htmlspecialchars($class_name);
-        if($rowCount < 5){
-            echo <<<STU
-                <div class="checkbox-inline">
-                  <label>
-                    <input type="checkbox" value="">
-                    $class_name
-                  </label>
-                </div>
-STU;
-            $rowCount += 1;
-        }
-        else{
-            echo <<<STD
-            <br>
-                <div class="checkbox-inline">
-                  <label>
-                    <input type="checkbox" value="">
-                    $class_name
-                  </label>
-                </div>
-STD;
-            $rowCount = 0;
-        }
-    }
-?>
-        </div>
+<h1 id="studentrecname"><?= $student_name ?></h1>
+<div class="row" id="classoptions">
+    <div class="col-md-6 col-md-offset-3">
+        <?PHP
+        $student_classes = array();
+        $sqlclass = "SELECT * FROM class";
+        $sqlstudentclass = "SELECT * FROM student_class WHERE student_id = $studentid";
+        $classRows = pdoSelect($sqlclass);
+        $matchedRows = pdoSelect($sqlstudentclass);
+        $rowCount = 0;
+        foreach($matchedRows as $matchedRow){
+            extract($matchedRow);
+            array_push($student_classes, $class_id);
+        };
+        print_r($student_classes);
+        ?>
+        <select class='form-control'>
+            <?PHP
+            foreach ($classRows as $classRow) {
+                extract($classRow);
+                if(in_array($class_id, $student_classes)){
+                    $class_name = htmlspecialchars($class_name);
+                    echo "<option value='$class_id'>$class_name</option>";
+                };
+            }
+            ?>
+        </select>
     </div>
+</div>
 
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>

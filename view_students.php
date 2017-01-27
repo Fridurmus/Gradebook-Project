@@ -52,11 +52,13 @@ $studentRows = pdoSelect('SELECT * FROM student');
 
         </div>
         <div class="row">
-            <div class="col-md-4 col-md-offset-4">
+            <div class="col-md-6 col-md-offset-3">
                 <table class="table table-hover">
                     <thead>
                     <tr>
                         <th>Student Name</th>
+                        <th></th>
+                        <th></th>
                         <th></th>
                         <th></th>
                         <th></th>
@@ -77,7 +79,9 @@ $studentRows = pdoSelect('SELECT * FROM student');
                         $student_classes = join(',', $student_classes);
                         echo <<<BUD
       <tr>
-      <td colspan='3'>$student_name</td>
+      <td colspan='4'>$student_name</td>
+      <td><a href="set_student_processing.php?student=$student_id" class="btn btn-sm btn-info">View Grades</a>
+      </td>
       <td class='addeditbtn'><button data-toggle="modal" data-target="#editstudentmodal" class='btn btn-sm btn-warning'
         data-studentname='$student_name' data-studentid='$student_id' data-studentclasses='$student_classes'>Edit</a></td>
       </tr>
@@ -85,7 +89,7 @@ BUD;
                     }
                     echo <<<DUD
       <tr>
-      <td colspan='3'></td>
+      <td colspan='5'></td>
       <td class='addeditbtn'><button data-toggle="modal" data-target="#addstudentmodal" class="btn btn-success btn-sm">Add New +</button></td>
       </tr>
 DUD;
