@@ -33,7 +33,7 @@ $("#editrecordform").submit(function () {
             if(resultstate){
                 $("#messagebox").prepend(successmess);
                 setTimeout(function(){
-                    location.replace("view_record.php");
+                    location.replace("view_record.php?previd=" + classid);
                 }, 2000);
             }
             else{

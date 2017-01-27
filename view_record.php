@@ -47,6 +47,14 @@
  * Date: 1/23/2017
  * Time: 2:28 PM
  */
+if (empty($_GET)){
+    $prev_id = null;
+}
+else{
+    $prev_id = $_GET['previd'];
+}
+
+
 $studentid = $_SESSION['studentid'];
 require_once 'includes/database_functions.php';
 $sql = "SELECT * FROM student WHERE student_id = $studentid";
@@ -59,7 +67,7 @@ $student_name = htmlspecialchars($student_name);
 <h1 id="studentrecname"><?= $student_name ?></h1>
 <div class="container" id="messagebox">
     <div class="row" id="classoptions">
-        <div class="col-md-6 col-md-offset-3">
+        <div class="col-md-4 col-md-offset-4">
             <?PHP
             $student_classes = array();
             $sqlclass = "SELECT * FROM class";
@@ -83,8 +91,14 @@ $student_name = htmlspecialchars($student_name);
                     foreach ($classRows as $classRow) {
                         extract($classRow);
                         if(in_array($class_id, $student_classes)){
-                            $class_name = htmlspecialchars($class_name);
-                            echo "<option value='$class_id'>$class_name</option>";
+                            if($prev_id == $class_id) {
+                                $class_name = htmlspecialchars($class_name);
+                                echo "<option value='$class_id' selected='selected'>$class_name</option>";
+                            }
+                            else{
+                                $class_name = htmlspecialchars($class_name);
+                                echo "<option value='$class_id'>$class_name</option>";
+                            }
                         };
                     }
                 }
@@ -103,7 +117,6 @@ $student_name = htmlspecialchars($student_name);
                     echo <<<LUP
                     <div id=$class_id class='hidethis hideable'>
                      <div class="col-md-8 col-md-offset-2">
-                         <h4 id="studentlisttitle">$class_name Assignment List</h4>
                          <hr>
                          <table class="table table-hover">
                             <thead>
