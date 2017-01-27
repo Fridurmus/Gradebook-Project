@@ -72,14 +72,21 @@ $student_name = htmlspecialchars($student_name);
                 array_push($student_classes, $class_id);
             };
             ?>
-            <select class='form-control' id="classtoggle">
                 <?PHP
-                foreach ($classRows as $classRow) {
-                    extract($classRow);
-                    if(in_array($class_id, $student_classes)){
-                        $class_name = htmlspecialchars($class_name);
-                        echo "<option value='$class_id'>$class_name</option>";
-                    };
+                if(count($student_classes) == 0){
+                    echo "<a href='view_students.php' id='noclass'><div class='alert alert-warning'>
+                              <strong>This student is not enrolled in any classes! Click here to go back.</strong>
+                          </div></a>";
+                }
+                else{
+                    echo "<select class='form-control' id='classtoggle'>";
+                    foreach ($classRows as $classRow) {
+                        extract($classRow);
+                        if(in_array($class_id, $student_classes)){
+                            $class_name = htmlspecialchars($class_name);
+                            echo "<option value='$class_id'>$class_name</option>";
+                        };
+                    }
                 }
                 ?>
             </select>
@@ -95,7 +102,7 @@ $student_name = htmlspecialchars($student_name);
                     $class_name = htmlspecialchars($class_name);
                     echo <<<LUP
                     <div id=$class_id class='hidethis'>
-                     <div class="col-md-6 col-md-offset-3">
+                     <div class="col-md-8 col-md-offset-2">
                          <h4 id="studentlisttitle">$class_name Assignment List</h4>
                          <hr>
                          <table class="table table-hover">
@@ -104,7 +111,10 @@ $student_name = htmlspecialchars($student_name);
                                 <th>Assignment Name</th>
                                 <th></th>
                                 <th></th>
+                                <th>Grade Earned</th>
                                 <th>Possible Grade</th>
+                                <th></th>
+                                <th>Percentage</th>
                                 <th></th>
                             </tr>
                             </thead>
@@ -112,6 +122,7 @@ $student_name = htmlspecialchars($student_name);
 LUP;
                     $total_possible = 0;
                     $total_earned = 0;
+                    $pcnt_total = 0;
                     $sqlgradebook = "SELECT * FROM gradebook 
                                      WHERE class_id = :class_id";
                     $gradebookvar = array(":class_id" => $class_id);
@@ -132,13 +143,17 @@ LUP;
                         }
                         else{
                             $pcnt_assign = 0;
-                            $pcnt_total = 0;
                         }
 
                         echo <<<BUD
                           <tr>
-                          <td colspan='3'>$assign_name</td>
+                          <td>$assign_name</td>
+                          <td></td>
+                          <td></td>
+                          <td>$grade_earned</td>
                           <td>$grade_max</td>
+                          <td></td>
+                          <td>$pcnt_assign%</td>
                           <td class='addeditbtn'><button type="button" data-toggle="modal" data-target="#editassignmodal" data-assignid="$assign_id"
                                                  data-assignname="$assign_name" data-grademax="$grade_max" 
                                                  class="btn btn-sm btn-warning">Edit</td>
@@ -147,8 +162,8 @@ BUD;
                     }
                     echo <<<DUD
                           <tr>
-                          <td id='overalltext' colspan='3';>Overall Possible:</td>
-                          <td>$total_possible points</td>
+                          <td id='overalltext' colspan='6'>Overall:</td>
+                          <td>$pcnt_total%</td>
                           <td class='addeditbtn'><button type="button" data-toggle="modal" data-target="#addassignmodal" class="btn btn-success btn-sm">Add New +</a></td>
                           </tr>
                           </tbody>
