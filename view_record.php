@@ -57,10 +57,7 @@ extract($studentRow[0]);
 $student_name = htmlspecialchars($student_name);
 ?>
 <h1 id="studentrecname"><?= $student_name ?></h1>
-<div class="container">
-    <div id="#messagebox">
-
-    </div>
+<div class="container" id="messagebox">
     <div class="row" id="classoptions">
         <div class="col-md-6 col-md-offset-3">
             <?PHP
