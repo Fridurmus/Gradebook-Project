@@ -57,34 +57,111 @@ extract($studentRow[0]);
 $student_name = htmlspecialchars($student_name);
 ?>
 <h1 id="studentrecname"><?= $student_name ?></h1>
-<div class="row" id="classoptions">
-    <div class="col-md-6 col-md-offset-3">
-        <?PHP
-        $student_classes = array();
-        $sqlclass = "SELECT * FROM class";
-        $sqlstudentclass = "SELECT * FROM student_class WHERE student_id = $studentid";
-        $classRows = pdoSelect($sqlclass);
-        $matchedRows = pdoSelect($sqlstudentclass);
-        $rowCount = 0;
-        foreach($matchedRows as $matchedRow){
-            extract($matchedRow);
-            array_push($student_classes, $class_id);
-        };
-        print_r($student_classes);
-        ?>
-        <select class='form-control'>
+<div class="container">
+    <div class="row" id="classoptions">
+        <div class="col-md-6 col-md-offset-3">
+            <?PHP
+            $student_classes = array();
+            $sqlclass = "SELECT * FROM class";
+            $sqlstudentclass = "SELECT * FROM student_class WHERE student_id = $studentid";
+            $classRows = pdoSelect($sqlclass);
+            $matchedRows = pdoSelect($sqlstudentclass);
+            $rowCount = 0;
+            foreach($matchedRows as $matchedRow){
+                extract($matchedRow);
+                array_push($student_classes, $class_id);
+            };
+            ?>
+            <select class='form-control' id="classtoggle">
+                <?PHP
+                foreach ($classRows as $classRow) {
+                    extract($classRow);
+                    if(in_array($class_id, $student_classes)){
+                        $class_name = htmlspecialchars($class_name);
+                        echo "<option value='$class_id'>$class_name</option>";
+                    };
+                }
+                ?>
+            </select>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="row" id="classrecords">
             <?PHP
             foreach ($classRows as $classRow) {
                 extract($classRow);
-                if(in_array($class_id, $student_classes)){
+                if (in_array($class_id, $student_classes)){
                     $class_name = htmlspecialchars($class_name);
-                    echo "<option value='$class_id'>$class_name</option>";
-                };
-            }
-            ?>
-        </select>
-    </div>
-</div>
+                    echo <<<LUP
+                    <div id=$class_id class='hidethis'>
+                     <div class="col-md-6 col-md-offset-3">
+                         <h4 id="studentlisttitle">$class_name Assignment List</h4>
+                         <hr>
+                         <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th>Assignment Name</th>
+                                <th></th>
+                                <th></th>
+                                <th>Possible Grade</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+LUP;
+                    $total_possible = 0;
+                    $total_earned = 0;
+                    $sqlgradebook = "SELECT * FROM gradebook 
+                                     WHERE class_id = :class_id";
+                    $gradebookvar = array(":class_id" => $class_id);
+                    $gradebookRows = pdoSelect($sqlgradebook, $gradebookvar);
+                    foreach ($gradebookRows as $gradebookRow) {
+                        extract($gradebookRow);
+                        $assign_name = htmlspecialchars($assign_name);
+                        $assignsql = "SELECT * FROM grade WHERE assign_id = $assign_id 
+                                      AND student_id = $student_id";
+                        $gradeRows = pdoSelect($assignsql);
+                        $total_possible = $total_possible + $grade_max;
+                        $grade_earned = 0;
+                        if($gradeRows){
+                            extract($gradeRows[0]);
+                            $pcnt_assign = round((($grade_earned / $grade_max) * 100), 2);
+                            $total_earned = $total_earned + $grade_earned;
+                            $pcnt_total = round((($total_earned / $total_possible) * 100), 2);
+                        }
+                        else{
+                            $pcnt_assign = 0;
+                            $pcnt_total = 0;
+                        }
+
+                        echo <<<BUD
+                          <tr>
+                          <td colspan='3'>$assign_name</td>
+                          <td>$grade_max</td>
+                          <td class='addeditbtn'><button type="button" data-toggle="modal" data-target="#editassignmodal" data-assignid="$assign_id"
+                                                 data-assignname="$assign_name" data-grademax="$grade_max" 
+                                                 class="btn btn-sm btn-warning">Edit</td>
+                          </tr>
+BUD;
+                    }
+                    echo <<<DUD
+                          <tr>
+                          <td id='overalltext' colspan='3';>Overall Possible:</td>
+                          <td>$total_possible points</td>
+                          <td class='addeditbtn'><button type="button" data-toggle="modal" data-target="#addassignmodal" class="btn btn-success btn-sm">Add New +</a></td>
+                          </tr>
+                          </tbody>
+                        </table>
+                    </div>
+                </div>
+DUD;
+                        }
+                    }
+                                    ?>
+
+
+
 
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
@@ -92,4 +169,5 @@ $student_name = htmlspecialchars($student_name);
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
         integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
         crossorigin="anonymous"></script>
+<script type="text/javascript" src="record_view_handler.js"></script>
 </body>
