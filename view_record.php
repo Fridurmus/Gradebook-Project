@@ -47,6 +47,8 @@
  * Date: 1/23/2017
  * Time: 2:28 PM
  */
+
+//Handler for returning to the correct page after setting a grade record.
 if (empty($_GET)){
     $prev_id = null;
 }
@@ -54,7 +56,7 @@ else{
     $prev_id = $_GET['previd'];
 }
 
-
+//Session variable set by set_student_processing.php.
 $studentid = $_SESSION['studentid'];
 require_once 'includes/database_functions.php';
 $sql = "SELECT * FROM student WHERE student_id = $studentid";
@@ -81,12 +83,14 @@ $student_name = htmlspecialchars($student_name);
             };
             ?>
                 <?PHP
+                //Checking to be sure the student is actually enrolled.
                 if(count($student_classes) == 0){
                     echo "<a href='view_students.php' id='noclass'><div class='alert alert-warning'>
                               <strong>This student is not enrolled in any classes! Click here to go back.</strong>
                           </div></a>";
                 }
                 else{
+                    //Select values are passed to record_view_handler.js to control the view.
                     echo "<select class='form-control' id='classtoggle'>";
                     foreach ($classRows as $classRow) {
                         extract($classRow);
@@ -148,6 +152,8 @@ LUP;
                         $gradeRows = pdoSelect($assignsql);
                         $total_possible = $total_possible + $grade_max;
                         $grade_earned = 0;
+                        /**Similarly to the if statement in view_assignments.php, this helps to prevent some ugly and
+                        problematic division by zero issues. It might be doable better with a joined table. We'll see.*/
                         if($gradeRows){
                             extract($gradeRows[0]);
                             $pcnt_assign = round((($grade_earned / $grade_max) * 100), 2);

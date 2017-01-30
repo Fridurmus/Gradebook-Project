@@ -54,6 +54,7 @@ $total_earned = 0;
 $total_possible = 0;
 $avg_grade = 0;
 $total_grades = 0;
+//Session variable set by set_class_edit_processing.php.
 $classid = $_SESSION['classid'];
 $assignid = $_GET['assign'];
 $studentlist = array();
@@ -65,12 +66,17 @@ $gradestudentsql = "SELECT student_id FROM grade
                     WHERE assign_id = $assignid";
 $gradeStudentRows = pdoSelect($gradestudentsql);
 
-$classStudents = pdoSelect("SELECT student_id
-                            FROM student_class
-                            WHERE class_id = $classid");
+/**This creates a list of students in the grade table that have entries already
+in so doing I prevent some ugly and problematic math later on using an if statement.
+This might be preventable using a joined table; will experiment later.*/
 foreach ($gradeStudentRows as $classStudent) {
     array_push($studentlist, join(',', $classStudent));
 }
+
+$classStudents = pdoSelect("SELECT student_id
+                            FROM student_class
+                            WHERE class_id = $classid");
+
 $gradebookRows = pdoSelect("SELECT *
                             FROM gradebook
                             WHERE assign_id = $assignid");
@@ -106,6 +112,9 @@ extract($gradebookRows[0]);
                         extract($studentInfo[0]);
                         $student_name = htmlspecialchars($student_name);
                         $total_grades++;
+                        /**TODO: Experiment with changing this to a joined query somewhere.
+                        Currently this checks the previously defined student list to make sure the student has a
+                        grade entered in the gradebook already, to prevent some ugly math and division by zero issues.*/
                         if(in_array($student_id, $studentlist)){
                             $gradesql = "SELECT grade_earned FROM grade 
                                          WHERE assign_id = $assignid

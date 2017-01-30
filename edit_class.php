@@ -48,6 +48,7 @@ session_start();
                 <?PHP
                 require_once 'includes/database_functions.php';
                 require_once "includes/pollform_generator.php";
+                //Session variable set by set_class_edit_processing.php.
                 $class_id = $_SESSION['classid'];
                 $studentlist = [];
                 $sqlclass = "SELECT * FROM class WHERE class_id = $class_id";
