@@ -1,21 +1,9 @@
-.centerbutton{
+.center{
     text-align: center;
-}
-
-#overalltext{
-    text-align: right;
 }
 .addeditbtn{
     text-align: right;
 }
-
-#studentrecname{
-    text-align: center;
-}
-#studentlisttitle{
-    text-align: center;
-}
-
 #noclass{
     text-align: center;
     text-decoration: none;

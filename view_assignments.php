@@ -52,62 +52,95 @@ require_once 'includes/database_functions.php';
 
 $total_earned = 0;
 $total_possible = 0;
-$pcnt_total = 0;
+$avg_grade = 0;
+$total_grades = 0;
 $classid = $_SESSION['classid'];
-$studentid = $_SESSION['studentid'];
-$sql = "SELECT * FROM gradebook WHERE class_id = $classid";
-$gradebookRows = pdoSelect($sql);
+$assignid = $_GET['assign'];
+$studentlist = array();
+$gradesql = "SELECT * FROM grade 
+        WHERE assign_id = $assignid";
+$gradeRows = pdoSelect($gradesql);
+
+$gradestudentsql = "SELECT student_id FROM grade
+                    WHERE assign_id = $assignid";
+$gradeStudentRows = pdoSelect($gradestudentsql);
+
+$classStudents = pdoSelect("SELECT student_id
+                            FROM student_class
+                            WHERE class_id = $classid");
+foreach ($gradeStudentRows as $classStudent) {
+    array_push($studentlist, join(',', $classStudent));
+}
+$gradebookRows = pdoSelect("SELECT *
+                            FROM gradebook
+                            WHERE assign_id = $assignid");
+extract($gradebookRows[0]);
+
 
 ?>
-<div id="gradebook">
-    <div class="container maintable">
+<div id="classgrades">
+    <div class="container maintable" id="messagebox">
         <div class="row">
             <div class="col-md-8 col-md-offset-2">
+                <h2 class="center"><?=$assign_name?></h2><hr>
                 <table class="table table-hover">
                     <thead>
                     <tr>
-                        <th>Assignment Name</th>
+                        <th>Student Name</th>
                         <th></th>
+                        <th>Grade Earned</th>
                         <th></th>
                         <th>Possible Grade</th>
+                        <th></th>
+                        <th>Percentage</th>
                         <th></th>
                     </tr>
                     </thead>
                     <tbody>
                     <?php
-                    foreach ($gradebookRows as $gradebookRow) {
-                        extract($gradebookRow);
-                        $assign_name = htmlspecialchars($assign_name);
-                        $assignsql = "SELECT * FROM grade WHERE assign_id = $assign_id";
-                        $gradeRows = pdoSelect($assignsql);
-                        $total_possible = $total_possible + $grade_max;
-                        if($gradeRows){
-                            extract($gradeRows[0]);
+                    foreach ($classStudents as $classStudent) {
+                        extract($classStudent);
+                        $studentInfo = pdoSelect("SELECT *
+                                                  FROM student
+                                                  WHERE student_id = $student_id");
+                        extract($studentInfo[0]);
+                        $student_name = htmlspecialchars($student_name);
+                        $total_grades++;
+                        if(in_array($student_id, $studentlist)){
+                            $gradesql = "SELECT grade_earned FROM grade 
+                                         WHERE assign_id = $assignid
+                                         AND student_id = $student_id";
+                            $thesegrades = pdoSelect($gradesql);
+                            extract($thesegrades[0]);
                             $pcnt_assign = round((($grade_earned / $grade_max) * 100), 2);
+                            $total_possible = $total_possible + $grade_max;
                             $total_earned = $total_earned + $grade_earned;
-                            $pcnt_total = round((($total_earned / $total_possible) * 100), 2);
                         }
                         else{
                             $grade_earned = 0;
+                            $pcnt_assign = 0;
+                            $total_possible = $total_possible + $grade_max;
+                            $total_earned = $total_earned + $grade_earned;
                         }
-
+                        $avg_grade = round(($total_earned / $total_grades), 2);
                         echo <<<BUD
       <tr>
-      <td colspan='3'>$assign_name</td>
-      <td>$grade_max</td>
-      <td class='addeditbtn'><button data-toggle="modal" data-target="#editassignmodal" data-assignid="$assign_id"
-                             data-assignname="$assign_name" data-assigngrade="$grade_earned" data-grademax="$grade_max" 
-                             class="btn btn-sm btn-warning">Edit</a></td>
+      <td colspan='2'>$student_name</td>
+      <td colspan='2'>$grade_earned</td>
+      <td colspan='2'>$grade_max</td>
+      <td>$pcnt_assign%</td>
+      <td class='addeditbtn'><button data-toggle='modal' data-target='#classeditgrademodal' data-assignid='$assign_id'
+                             data-student='$student_id' data-assigngrade='$grade_earned'
+                             class='btn btn-sm btn-warning'>Edit</a></td>
       </tr>
 BUD;
                     }
-                    echo <<<DUD
-      <tr>
-      <td id='overalltext' colspan='3';>Overall Possible:</td>
-      <td>$total_possible points</td>
-      <td class='addeditbtn'><button data-toggle="modal" data-target="#addassignmodal" class="btn btn-success btn-sm">Add New +</a></td>
-      </tr>
-DUD;
+                    echo<<<TOT
+                    <tr>
+                          <td class='addeditbtn' colspan='7'>Class Average Grade:</td>
+                          <td>$avg_grade</td>
+                    </tr>
+TOT;
                     ?>
 
 
@@ -118,68 +151,32 @@ DUD;
     </div>
 </div>
 </div>
-<div class="modal fade" id="addassignmodal" tabindex="-1" role="dialog" aria-labelledby="Add Assignment">
+<div class="modal fade" id='classeditgrademodal' tabindex="-1" role="dialog" aria-labelledby="Edit Grade">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="addassignmodallabel">Add New Assignment</h4>
+                <h4 class="modal-title" id="editgrademodallabel">Edit Grade</h4>
             </div>
             <div class="modal-body">
                 <?php
                 require_once "includes/pollform_generator.php";
-                $assignnameform = textField("Assignment Name:", "assignnameadd", "Assignment");
-                $gradeearnform = numField("Grade Earned:", "assigngradeadd", "", "", "0");
-                $maxgradeform = numField("Max Grade:", "maxgradeadd", "", "", "0");
-                $classid = $_SESSION['classid'];
+                $gradeearnform = numField("Grade Earned:", "assigngradeedit", "", "", "0");
                 ?>
                 <div class="container">
                     <div class="row">
-                        <div class="col-md-4" id="addgradeform">
-                            <form id="addassignform" action="">
-                                <?=$assignnameform?>
-                                <?=$maxgradeform?>
-                                <?="<input type='hidden' id='classidadd' name='classidadd' value=$classid required>"?><br>
+                        <div class="col-md-4">
+                            <form id="classgradeearnform" action="">
+                                <?=$gradeearnform?>
+                                <?="<input type='hidden' id='assignidgrade' name='assignidgrade' required>"?>
+                                <?="<input type='hidden' id='studentidgrade' name='studentidgrade' required>"?>
                             </form>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
-                <button class='btn btn-primary' form="addassignform" type="submit">Submit</button>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="modal fade" id="editassignmodal" tabindex="-1" role="dialog" aria-labelledby="Edit Assignment">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="editassignmodallabel">Edit Assignment</h4>
-            </div>
-            <div class="modal-body">
-                <?php
-                require_once "includes/pollform_generator.php";
-                $assignnameform = textField("Assignment Name:", "assignnameedit", "");
-//                $gradeearnform = numField("Grade Earned:", "assigngradeedit", "", "");
-                $maxgradeform = numField("Max Grade:", "maxgradeedit", "", "");
-                ?>
-                <div class="container">
-                    <div class="row">
-                        <div class="col-md-4" id="editgradeform">
-                            <form id="editassignform" action=''>
-                                <?=$assignnameform?>
-<!--                                <?//=$gradeearnform?>-->
-                                <?=$maxgradeform?>
-                                <?="<input type='hidden' id='assignidedit' name='assignidedit' required>"?><br>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class='btn btn-primary' form="editassignform" type="submit">Submit</button>
+                <button class='btn btn-primary' form="classgradeearnform" type="submit">Submit</button>
             </div>
         </div>
     </div>
@@ -192,20 +189,17 @@ DUD;
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
         integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
         crossorigin="anonymous"></script>
-<script type="text/javascript" src="add_grade_handler.js"></script>
-<script type="text/javascript" src="edit_grade_handler.js"></script>
+<script type="text/javascript" src="edit_class_grade_handler.js"></script>
 <script>
-    $('#editassignmodal').on('show.bs.modal', function(event){
+    $('#classeditgrademodal').on('show.bs.modal', function(event){
         var button = $(event.relatedTarget);
         var assignid = button.data("assignid");
-        var assignname = button.data("assignname");
+        var studentid = button.data("student");
         var assigngrade = button.data("assigngrade");
-        var maxgrade = button.data("grademax");
         var modal = $(this);
-        modal.find("#assignidedit").val(assignid);
-        modal.find("#assignnameedit").val(assignname);
+        modal.find("#assignidgrade").val(assignid);
         modal.find("#assigngradeedit").val(assigngrade);
-        modal.find("#maxgradeedit").val(maxgrade);
+        modal.find("#studentidgrade").val(studentid);
     });
 </script>
 </body>

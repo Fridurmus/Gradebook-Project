@@ -64,7 +64,7 @@ $studentRow = pdoSelect($sql);
 extract($studentRow[0]);
 $student_name = htmlspecialchars($student_name);
 ?>
-<h1 id="studentrecname"><?= $student_name ?></h1>
+<h1 class="center"><?= $student_name ?></h1>
 <div class="container" id="messagebox">
     <div class="row" id="classoptions">
         <div class="col-md-4 col-md-offset-4">
@@ -203,7 +203,7 @@ DUD;
                 ?>
                 <div class="container">
                     <div class="row">
-                        <div class="col-md-4" id="addstudentform">
+                        <div class="col-md-4">
                             <form id="editrecordform" action="">
                                 <?=$editrecordform?>
                             </form>

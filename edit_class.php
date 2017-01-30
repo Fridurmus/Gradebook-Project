@@ -70,7 +70,7 @@ session_start();
     </div>
     <div class="row">
         <div class="col-md-3 col-md-offset-1">
-            <h4 id="studentlisttitle">Student List</h4>
+            <h4 class="center">Student List</h4>
             <hr>
             <?php
             foreach ($studentRows as $studentRow) {
@@ -111,15 +111,15 @@ STD;
 
         ?>
         <div class="col-md-7">
-            <h4 id="studentlisttitle">Assignment List</h4>
+            <h4 class="center">Assignment List</h4>
             <hr>
             <table class="table table-hover">
                 <thead>
                 <tr>
                     <th>Assignment Name</th>
                     <th></th>
-                    <th></th>
                     <th>Possible Grade</th>
+                    <th></th>
                     <th></th>
                 </tr>
                 </thead>
@@ -132,19 +132,11 @@ STD;
                     $gradeRows = pdoSelect($assignsql);
                     $total_possible = $total_possible + $grade_max;
                     $grade_earned = 0;
-//                    if($gradeRows){
-//                        extract($gradeRows[0]);
-//                        $pcnt_assign = round((($grade_earned / $grade_max) * 100), 2);
-//                        $total_earned = $total_earned + $grade_earned;
-//                        $pcnt_total = round((($total_earned / $total_possible) * 100), 2);
-//                    }
-//                    else{
-//                    }
-
                     echo <<<BUD
       <tr>
-      <td colspan='3'>$assign_name</td>
+      <td colspan='2'>$assign_name</td>
       <td>$grade_max</td>
+      <td class='addeditbtn'><a href="view_assignments.php?assign=$assign_id" class="btn btn-sm btn-info">Manage Grades</td>
       <td class='addeditbtn'><button type="button" data-toggle="modal" data-target="#editassignmodal" data-assignid="$assign_id"
                              data-assignname="$assign_name" data-grademax="$grade_max" 
                              class="btn btn-sm btn-warning">Edit</td>
