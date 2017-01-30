@@ -182,7 +182,7 @@ BUD;
                     }
                     echo <<<DUD
                           <tr>
-                          <td id='overalltext' colspan='7'>Overall:</td>
+                          <td class='addeditbtn' colspan='7'>Overall:</td>
                           <td>$pcnt_total%</td>
                           </tr>
                           </tbody>
