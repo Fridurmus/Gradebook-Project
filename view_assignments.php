@@ -104,6 +104,10 @@ extract($gradebookRows[0]);
                     </thead>
                     <tbody>
                     <?php
+                    $avg_grade = pdoSelect("SELECT AVG(grade_earned)
+                                                FROM grade
+                                                WHERE assign_id = $assignid");
+                    $avg_grade = number_format($avg_grade[0]['AVG(grade_earned)'], 2, '.', '');
                     foreach ($classStudents as $classStudent) {
                         extract($classStudent);
                         $studentInfo = pdoSelect("SELECT *
@@ -111,7 +115,7 @@ extract($gradebookRows[0]);
                                                   WHERE student_id = $student_id");
                         extract($studentInfo[0]);
                         $student_name = htmlspecialchars($student_name);
-                        $total_grades++;
+//                        $total_grades++;
                         /**TODO: Experiment with changing this to a joined query somewhere.
                         Currently this checks the previously defined student list to make sure the student has a
                         grade entered in the gradebook already, to prevent some ugly math and division by zero issues.*/
@@ -122,16 +126,11 @@ extract($gradebookRows[0]);
                             $thesegrades = pdoSelect($gradesql);
                             extract($thesegrades[0]);
                             $pcnt_assign = round((($grade_earned / $grade_max) * 100), 2);
-                            $total_possible = $total_possible + $grade_max;
-                            $total_earned = $total_earned + $grade_earned;
                         }
                         else{
                             $grade_earned = 0;
                             $pcnt_assign = 0;
-                            $total_possible = $total_possible + $grade_max;
-                            $total_earned = $total_earned + $grade_earned;
                         }
-                        $avg_grade = round(($total_earned / $total_grades), 2);
                         echo <<<BUD
       <tr>
       <td colspan='2'>$student_name</td>
