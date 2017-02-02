@@ -56,13 +56,16 @@ $totalPossible = 0;
 $classid = $_SESSION['classid'];
 $assignid = $_GET['assign'];
 
-$testStudents = pdoSelect("SELECT student.student_name, student.student_id, 
+$gradedStudents = pdoSelect("SELECT student.student_name, student.student_id, 
                                   grade.grade_earned, gradebook.grade_max, gradebook.assign_name
                            FROM student
                            JOIN gradebook ON gradebook.assign_id = $assignid
-                           LEFT OUTER JOIN grade ON grade.student_id = student.student_id AND grade.assign_id = $assignid");
-
-extract($testStudents[0]);
+                           LEFT OUTER JOIN grade ON grade.student_id = student.student_id AND grade.assign_id = $assignid
+                           WHERE student.student_id IN 
+                              (SELECT student_id
+                              FROM student_class
+                              WHERE class_id = $classid)");
+extract($gradedStudents[0]);
 
 ?>
 <div id="classgrades">
@@ -89,7 +92,7 @@ extract($testStudents[0]);
                                                 FROM grade
                                                 WHERE assign_id = $assignid");
                     $avg_grade = number_format($avg_grade[0]['AVG(grade_earned)'], 2, '.', '');
-                    foreach ($testStudents as $testStudent) {
+                    foreach ($gradedStudents as $testStudent) {
                         extract($testStudent);
                         $student_name = htmlspecialchars($student_name);
                         if($grade_earned){

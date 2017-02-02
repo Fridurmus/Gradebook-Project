@@ -50,18 +50,22 @@ session_start();
                 require_once "includes/pollform_generator.php";
                 //Session variable set by set_class_edit_processing.php.
                 $classId = $_SESSION['classid'];
+                //Defining a single variable array for multiple pdoSelects.
+                $classIdVars = [':classId' => $classId];
                 $studentList = [];
-                $classStudents = pdoSelect("SELECT student.student_id, student.student_name, class.class_name
+                $classStudentSql = "SELECT student.student_id, student.student_name, class.class_name
                                                 FROM student
-                                                JOIN class ON class.class_id = $classId");
+                                                JOIN class ON class.class_id = :classId";
+                $classStudents = pdoSelect($classStudentSql, $classIdVars);
                 extract($classStudents[0]);
                 $classNameForm = textField("Class Name:", "classnameedit", $class_name, $class_name);
                 echo $classNameForm;
                 echo "<input type='hidden' name='classidedit' id='classidedit' value=$classId required><br>";
 
-                $enrollStudents = pdoSelect("SELECT student_id 
-                                              FROM student_class
-                                              WHERE class_id = $classId");
+                $enrollStudentsSql = "SELECT student_id 
+                                          FROM student_class
+                                          WHERE class_id = :classId";
+                $enrollStudents = pdoSelect($enrollStudentsSql, $classIdVars);
                 foreach ($enrollStudents as $enrollStudent) {
                     array_push($studentList, join(',', $enrollStudent));
                 }
@@ -104,8 +108,8 @@ STD;
         </div>
         <?PHP
             $totalPossible = 0;
-            $gradeSql = "SELECT * FROM gradebook WHERE class_id = $classId";
-            $gradebookRows = pdoSelect($gradeSql);
+            $gradeSql = "SELECT * FROM gradebook WHERE class_id = :classId";
+            $gradebookRows = pdoSelect($gradeSql, $classIdVars);
         ?>
         <div class="col-md-7">
             <h4 class="center">Assignment List</h4>
