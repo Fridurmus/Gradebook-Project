@@ -115,6 +115,7 @@ $student_name = htmlspecialchars($student_name);
     <div class="row" id="classrecords">
             <?PHP
             foreach ($classRows as $classRow) {
+                $totalPossible = 0;
                 extract($classRow);
                 if (in_array($class_id, $student_classes)){
                     $class_name = htmlspecialchars($class_name);
@@ -137,31 +138,29 @@ $student_name = htmlspecialchars($student_name);
                             </thead>
                             <tbody>
 LUP;
-                    $total_possible = 0;
-                    $total_earned = 0;
-                    $pcnt_total = 0;
-                    $sqlgradebook = "SELECT * FROM gradebook 
-                                     WHERE class_id = :class_id";
-                    $gradebookvar = array(":class_id" => $class_id);
-                    $gradebookRows = pdoSelect($sqlgradebook, $gradebookvar);
+
+                    $totalEarned = 0;
+                    $pcntTotal = 0;
+                    $sqlgradebook = "SELECT gradebook.*, grade.grade_earned
+                                     FROM gradebook
+                                     LEFT OUTER JOIN grade ON grade.student_id = $student_id AND grade.assign_id = gradebook.assign_id
+                                     WHERE gradebook.class_id = $class_id";
+                    $gradebookRows = pdoSelect($sqlgradebook);
+                    echo "<pre>";
+                    print_r($gradebookRows);
+                    echo "</pre>";
                     foreach ($gradebookRows as $gradebookRow) {
                         extract($gradebookRow);
                         $assign_name = htmlspecialchars($assign_name);
-                        $assignsql = "SELECT * FROM grade WHERE assign_id = $assign_id 
-                                      AND student_id = $student_id";
-                        $gradeRows = pdoSelect($assignsql);
-                        $total_possible = $total_possible + $grade_max;
-                        $grade_earned = 0;
-                        /**Similarly to the if statement in view_assignments.php, this helps to prevent some ugly and
-                        problematic division by zero issues. It might be doable better with a joined table. We'll see.*/
-                        if($gradeRows){
-                            extract($gradeRows[0]);
-                            $pcnt_assign = round((($grade_earned / $grade_max) * 100), 2);
-                            $total_earned = $total_earned + $grade_earned;
-                            $pcnt_total = round((($total_earned / $total_possible) * 100), 2);
+                        $totalPossible = $totalPossible + $grade_max;
+                        if($grade_earned){
+                            $pcntAssign = round((($grade_earned / $grade_max) * 100), 2);
+                            $totalEarned = $totalEarned + $grade_earned;
+                            $pcntTotal = round((($totalEarned / $totalPossible) * 100), 2);
                         }
                         else{
-                            $pcnt_assign = 0;
+                            $grade_earned = 0;
+                            $pcntAssign = 0;
                         }
 
                         echo <<<BUD
@@ -172,7 +171,7 @@ LUP;
                           <td>$grade_earned</td>
                           <td>$grade_max</td>
                           <td></td>
-                          <td>$pcnt_assign%</td>
+                          <td>$pcntAssign%</td>
                           <td class='addeditbtn'><button type="button" data-toggle="modal" data-target="#editrecordmodal" data-assignid="$assign_id"
                                                  data-assignname="$assign_name" data-grademax="$grade_max" 
                                                  data-classid = "$class_id" data-gradeearn="$grade_earned" 
@@ -183,7 +182,7 @@ BUD;
                     echo <<<DUD
                           <tr>
                           <td class='addeditbtn' colspan='7'>Overall:</td>
-                          <td>$pcnt_total%</td>
+                          <td>$pcntTotal%</td>
                           </tr>
                           </tbody>
                         </table>
