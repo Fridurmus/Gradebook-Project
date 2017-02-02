@@ -27,7 +27,7 @@ session_start();
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <span class="navbar-brand">Gradebook</span>
+            <a href="index.php"><span class="navbar-brand">Gradebook</span></a>
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
@@ -107,13 +107,13 @@ DUD;
             <div class="modal-body">
                 <?php
                 require_once "includes/pollform_generator.php";
-                $classNameForm = textField("Class Name:", "classname", "Class");
+                $classnameform = textField("Class Name:", "classname", "Class");
                 ?>
                 <div class="container">
                     <div class="row">
                         <div class="col-md-4" id="addclassform">
                             <form id="addclassformhandle" action="">
-                                <?=$classNameForm?>
+                                <?=$classnameform?>
                             </form>
                         </div>
                     </div>

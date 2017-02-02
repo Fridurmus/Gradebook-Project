@@ -70,9 +70,11 @@ $studentRows = pdoSelect('SELECT * FROM student');
                         $student_classes = [];
                         extract($studentRow);
                         $student_name = htmlspecialchars($student_name);
-                        $studentClasses = pdoSelect("SELECT class_id 
-                                                     FROM student_class
-                                                     WHERE student_id = $student_id");
+                        $studentClassesSql = "SELECT class_id 
+                                                 FROM student_class
+                                                 WHERE student_id = :student_id";
+                        $studentClassesVars = [':student_id' => $student_id];
+                        $studentClasses = pdoSelect($studentClassesSql, $studentClassesVars);
                         foreach($studentClasses as $studentClass){
                             array_push($student_classes, join(',', $studentClass));
                         }
