@@ -56,15 +56,18 @@ $totalPossible = 0;
 $classid = $_SESSION['classid'];
 $assignid = $_GET['assign'];
 
-$gradedStudents = pdoSelect("SELECT student.student_name, student.student_id, 
-                                  grade.grade_earned, gradebook.grade_max, gradebook.assign_name
-                           FROM student
-                           JOIN gradebook ON gradebook.assign_id = $assignid
-                           LEFT OUTER JOIN grade ON grade.student_id = student.student_id AND grade.assign_id = $assignid
-                           WHERE student.student_id IN 
-                              (SELECT student_id
-                              FROM student_class
-                              WHERE class_id = $classid)");
+$gradedStudentsSql = "SELECT student.student_name, student.student_id, 
+                          grade.grade_earned, gradebook.grade_max, gradebook.assign_name
+                       FROM student
+                       JOIN gradebook ON gradebook.assign_id = :assignid
+                       LEFT OUTER JOIN grade ON grade.student_id = student.student_id AND grade.assign_id = :assignid
+                       WHERE student.student_id IN 
+                         (SELECT student_id
+                            FROM student_class
+                            WHERE class_id = :classid)";
+$gradedStudentsVars = [':assignid' => $assignid, ':classid' => $classid];
+$gradedStudents = pdoSelect($gradedStudentsSql, $gradedStudentsVars);
+
 extract($gradedStudents[0]);
 
 ?>
@@ -88,9 +91,11 @@ extract($gradedStudents[0]);
                     </thead>
                     <tbody>
                     <?php
-                    $avg_grade = pdoSelect("SELECT AVG(grade_earned)
-                                                FROM grade
-                                                WHERE assign_id = $assignid");
+                    $avgGradeSql = "SELECT AVG(grade_earned)
+                                        FROM grade
+                                        WHERE assign_id = :assignid";
+                    $avgGradeVars = [':assignid' => $assignid];
+                    $avg_grade = pdoSelect($avgGradeSql, $avgGradeVars);
                     $avg_grade = number_format($avg_grade[0]['AVG(grade_earned)'], 2, '.', '');
                     foreach ($gradedStudents as $testStudent) {
                         extract($testStudent);

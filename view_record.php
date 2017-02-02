@@ -59,8 +59,10 @@ else{
 //Session variable set by set_student_processing.php.
 $studentid = $_SESSION['studentid'];
 require_once 'includes/database_functions.php';
-$sql = "SELECT * FROM student WHERE student_id = $studentid";
-$studentRow = pdoSelect($sql);
+//Defining a single array of variables for multiple PDOSelects.
+$studentIdVars = [':studentid' => $studentid];
+$sql = "SELECT * FROM student WHERE student_id = :studentid";
+$studentRow = pdoSelect($sql, $studentIdVars);
 
 
 extract($studentRow[0]);
@@ -74,9 +76,8 @@ $student_name = htmlspecialchars($student_name);
             $studentClasses = array();
             $classSql = "SELECT * FROM class";
             $studentClassSql = "SELECT * FROM student_class WHERE student_id = :studentid";
-            $studentClassVars = [':studentid' => $studentid];
             $classRows = pdoSelect($classSql);
-            $matchedRows = pdoSelect($studentClassSql, $studentClassVars);
+            $matchedRows = pdoSelect($studentClassSql, $studentIdVars);
             $rowCount = 0;
             foreach($matchedRows as $matchedRow){
                 extract($matchedRow);
