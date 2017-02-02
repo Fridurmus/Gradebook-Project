@@ -49,22 +49,21 @@ session_start();
                 require_once 'includes/database_functions.php';
                 require_once "includes/pollform_generator.php";
                 //Session variable set by set_class_edit_processing.php.
-                $class_id = $_SESSION['classid'];
-                $studentlist = [];
-                $sqlclass = "SELECT * FROM class WHERE class_id = $class_id";
-                $classRows = pdoSelect($sqlclass);
-                extract($classRows[0]);
-                $classnameform = textField("Class Name:", "classnameedit", $class_name, $class_name);
-                echo $classnameform;
-                echo "<input type='hidden' name='classidedit' id='classidedit' value=$class_id required><br>";
+                $classId = $_SESSION['classid'];
+                $studentList = [];
+                $classStudents = pdoSelect("SELECT student.student_id, student.student_name, class.class_name
+                                                FROM student
+                                                JOIN class ON class.class_id = $classId");
+                extract($classStudents[0]);
+                $classNameForm = textField("Class Name:", "classnameedit", $class_name, $class_name);
+                echo $classNameForm;
+                echo "<input type='hidden' name='classidedit' id='classidedit' value=$classId required><br>";
 
-                $sqlstudent = "SELECT * FROM student";
-                $studentRows = pdoSelect($sqlstudent);
-                $classStudents = pdoSelect("SELECT student_id 
-                                                     FROM student_class
-                                                     WHERE class_id = $class_id");
-                foreach ($classStudents as $classStudent) {
-                    array_push($studentlist, join(',', $classStudent));
+                $enrollStudents = pdoSelect("SELECT student_id 
+                                              FROM student_class
+                                              WHERE class_id = $classId");
+                foreach ($enrollStudents as $enrollStudent) {
+                    array_push($studentList, join(',', $enrollStudent));
                 }
                 ?>
         </div>
@@ -74,10 +73,10 @@ session_start();
             <h4 class="center">Student List</h4>
             <hr>
             <?php
-            foreach ($studentRows as $studentRow) {
+            foreach ($classStudents as $studentRow) {
                 extract($studentRow);
                 $student_name = htmlspecialchars($student_name);
-                if (in_array(($student_id), $studentlist)) {
+                if (in_array(($student_id), $studentList)) {
                     echo <<<STU
                             <div class="col-sm-12">
                                 <div class="checkbox">
@@ -104,12 +103,9 @@ STD;
             ?>
         </div>
         <?PHP
-            $total_earned = 0;
-            $total_possible = 0;
-            $pcnt_total = 0;
-            $sql = "SELECT * FROM gradebook WHERE class_id = $class_id";
-            $gradebookRows = pdoSelect($sql);
-
+            $totalPossible = 0;
+            $gradeSql = "SELECT * FROM gradebook WHERE class_id = $classId";
+            $gradebookRows = pdoSelect($gradeSql);
         ?>
         <div class="col-md-7">
             <h4 class="center">Assignment List</h4>
@@ -129,10 +125,7 @@ STD;
                 foreach ($gradebookRows as $gradebookRow) {
                     extract($gradebookRow);
                     $assign_name = htmlspecialchars($assign_name);
-                    $assignsql = "SELECT * FROM grade WHERE assign_id = $assign_id";
-                    $gradeRows = pdoSelect($assignsql);
-                    $total_possible = $total_possible + $grade_max;
-                    $grade_earned = 0;
+                    $totalPossible = $totalPossible + $grade_max;
                     echo <<<BUD
       <tr>
       <td colspan='2'>$assign_name</td>
@@ -147,7 +140,7 @@ BUD;
                 echo <<<DUD
       <tr>
       <td id='overalltext' colspan='3';>Overall Possible:</td>
-      <td>$total_possible points</td>
+      <td>$totalPossible points</td>
       <td class='addeditbtn'><button type="button" data-toggle="modal" data-target="#addassignmodal" class="btn btn-success btn-sm">Add New +</a></td>
       </tr>
 DUD;
@@ -188,7 +181,7 @@ DUD;
                             <form id="addassignform" action="">
                                 <?=$assignnameform?>
                                 <?=$maxgradeform?>
-                                <?="<input type='hidden' id='classidadd' name='classidadd' value=$class_id required>"?><br>
+                                <?="<input type='hidden' id='classidadd' name='classidadd' value=$classId required>"?><br>
                             </form>
                         </div>
                     </div>

@@ -50,10 +50,8 @@ session_start();
  */
 require_once 'includes/database_functions.php';
 
-$total_earned = 0;
-$total_possible = 0;
-$avg_grade = 0;
-$total_grades = 0;
+$totalEarned = 0;
+$totalPossible = 0;
 //Session variable set by set_class_edit_processing.php.
 $classid = $_SESSION['classid'];
 $assignid = $_GET['assign'];
@@ -94,23 +92,19 @@ extract($testStudents[0]);
                     foreach ($testStudents as $testStudent) {
                         extract($testStudent);
                         $student_name = htmlspecialchars($student_name);
-//                        $total_grades++;
-                        /**TODO: Experiment with changing this to a joined query somewhere.
-                        Currently this checks the previously defined student list to make sure the student has a
-                        grade entered in the gradebook already, to prevent some ugly math and division by zero issues.*/
                         if($grade_earned){
-                            $pcnt_assign = round((($grade_earned / $grade_max) * 100), 2);
+                            $pcntAssign = round((($grade_earned / $grade_max) * 100), 2);
                         }
                         else{
                             $grade_earned = 0;
-                            $pcnt_assign = 0;
+                            $pcntAssign = 0;
                         }
                         echo <<<BUD
       <tr>
       <td colspan='2'>$student_name</td>
       <td colspan='2'>$grade_earned</td>
       <td colspan='2'>$grade_max</td>
-      <td>$pcnt_assign%</td>
+      <td>$pcntAssign%</td>
       <td class='addeditbtn'><button data-toggle='modal' data-target='#classeditgrademodal' data-assignid='$assignid'
                              data-student='$student_id' data-assigngrade='$grade_earned'
                              class='btn btn-sm btn-warning'>Edit</a></td>
@@ -143,13 +137,13 @@ TOT;
             <div class="modal-body">
                 <?php
                 require_once "includes/pollform_generator.php";
-                $gradeearnform = numField("Grade Earned:", "assigngradeedit", "", "", "0");
+                $gradeEarnForm = numField("Grade Earned:", "assigngradeedit", "", "", "0");
                 ?>
                 <div class="container">
                     <div class="row">
                         <div class="col-md-4">
                             <form id="classgradeearnform" action="">
-                                <?=$gradeearnform?>
+                                <?=$gradeEarnForm?>
                                 <?="<input type='hidden' id='assignidgrade' name='assignidgrade' required>"?>
                                 <?="<input type='hidden' id='studentidgrade' name='studentidgrade' required>"?>
                             </form>

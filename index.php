@@ -107,13 +107,13 @@ DUD;
             <div class="modal-body">
                 <?php
                 require_once "includes/pollform_generator.php";
-                $classnameform = textField("Class Name:", "classname", "Class");
+                $classNameForm = textField("Class Name:", "classname", "Class");
                 ?>
                 <div class="container">
                     <div class="row">
                         <div class="col-md-4" id="addclassform">
                             <form id="addclassformhandle" action="">
-                                <?=$classnameform?>
+                                <?=$classNameForm?>
                             </form>
                         </div>
                     </div>
