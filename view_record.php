@@ -71,20 +71,21 @@ $student_name = htmlspecialchars($student_name);
     <div class="row" id="classoptions">
         <div class="col-md-4 col-md-offset-4">
             <?PHP
-            $student_classes = array();
-            $sqlclass = "SELECT * FROM class";
-            $sqlstudentclass = "SELECT * FROM student_class WHERE student_id = $studentid";
-            $classRows = pdoSelect($sqlclass);
-            $matchedRows = pdoSelect($sqlstudentclass);
+            $studentClasses = array();
+            $classSql = "SELECT * FROM class";
+            $studentClassSql = "SELECT * FROM student_class WHERE student_id = :studentid";
+            $studentClassVars = [':studentid' => $studentid];
+            $classRows = pdoSelect($classSql);
+            $matchedRows = pdoSelect($studentClassSql, $studentClassVars);
             $rowCount = 0;
             foreach($matchedRows as $matchedRow){
                 extract($matchedRow);
-                array_push($student_classes, $class_id);
+                array_push($studentClasses, $class_id);
             };
             ?>
                 <?PHP
                 //Checking to be sure the student is actually enrolled.
-                if(count($student_classes) == 0){
+                if(count($studentClasses) == 0){
                     echo "<a href='view_students.php' id='noclass'><div class='alert alert-warning'>
                               <strong>This student is not enrolled in any classes! Click here to go back.</strong>
                           </div></a>";
@@ -94,7 +95,7 @@ $student_name = htmlspecialchars($student_name);
                     echo "<select class='form-control' id='classtoggle'>";
                     foreach ($classRows as $classRow) {
                         extract($classRow);
-                        if(in_array($class_id, $student_classes)){
+                        if(in_array($class_id, $studentClasses)){
                             if($prev_id == $class_id) {
                                 $class_name = htmlspecialchars($class_name);
                                 echo "<option value='$class_id' selected='selected'>$class_name</option>";
@@ -117,7 +118,7 @@ $student_name = htmlspecialchars($student_name);
             foreach ($classRows as $classRow) {
                 $totalPossible = 0;
                 extract($classRow);
-                if (in_array($class_id, $student_classes)){
+                if (in_array($class_id, $studentClasses)){
                     $class_name = htmlspecialchars($class_name);
                     echo <<<LUP
                     <div id=$class_id class='hidethis hideable'>
@@ -141,14 +142,12 @@ LUP;
 
                     $totalEarned = 0;
                     $pcntTotal = 0;
-                    $sqlgradebook = "SELECT gradebook.*, grade.grade_earned
+                    $gradebookSql = "SELECT gradebook.*, grade.grade_earned
                                      FROM gradebook
-                                     LEFT OUTER JOIN grade ON grade.student_id = $student_id AND grade.assign_id = gradebook.assign_id
-                                     WHERE gradebook.class_id = $class_id";
-                    $gradebookRows = pdoSelect($sqlgradebook);
-                    echo "<pre>";
-                    print_r($gradebookRows);
-                    echo "</pre>";
+                                     LEFT OUTER JOIN grade ON grade.student_id = :student_id AND grade.assign_id = gradebook.assign_id
+                                     WHERE gradebook.class_id = :class_id";
+                    $gradebookVars = [':student_id' => $studentid, ':class_id' => $class_id];
+                    $gradebookRows = pdoSelect($gradebookSql, $gradebookVars);
                     foreach ($gradebookRows as $gradebookRow) {
                         extract($gradebookRow);
                         $assign_name = htmlspecialchars($assign_name);
