@@ -57,31 +57,14 @@ $total_grades = 0;
 //Session variable set by set_class_edit_processing.php.
 $classid = $_SESSION['classid'];
 $assignid = $_GET['assign'];
-$studentlist = array();
-$gradesql = "SELECT * FROM grade 
-        WHERE assign_id = $assignid";
-$gradeRows = pdoSelect($gradesql);
 
-$gradestudentsql = "SELECT student_id FROM grade
-                    WHERE assign_id = $assignid";
-$gradeStudentRows = pdoSelect($gradestudentsql);
+$testStudents = pdoSelect("SELECT student.student_name, student.student_id, 
+                                  grade.grade_earned, gradebook.grade_max, gradebook.assign_name
+                           FROM student
+                           JOIN gradebook ON gradebook.assign_id = $assignid
+                           LEFT OUTER JOIN grade ON grade.student_id = student.student_id AND grade.assign_id = $assignid");
 
-/**This creates a list of students in the grade table that have entries already
-in so doing I prevent some ugly and problematic math later on using an if statement.
-This might be preventable using a joined table; will experiment later.*/
-foreach ($gradeStudentRows as $classStudent) {
-    array_push($studentlist, join(',', $classStudent));
-}
-
-$classStudents = pdoSelect("SELECT student_id
-                            FROM student_class
-                            WHERE class_id = $classid");
-
-$gradebookRows = pdoSelect("SELECT *
-                            FROM gradebook
-                            WHERE assign_id = $assignid");
-extract($gradebookRows[0]);
-
+extract($testStudents[0]);
 
 ?>
 <div id="classgrades">
@@ -108,23 +91,14 @@ extract($gradebookRows[0]);
                                                 FROM grade
                                                 WHERE assign_id = $assignid");
                     $avg_grade = number_format($avg_grade[0]['AVG(grade_earned)'], 2, '.', '');
-                    foreach ($classStudents as $classStudent) {
-                        extract($classStudent);
-                        $studentInfo = pdoSelect("SELECT *
-                                                  FROM student
-                                                  WHERE student_id = $student_id");
-                        extract($studentInfo[0]);
+                    foreach ($testStudents as $testStudent) {
+                        extract($testStudent);
                         $student_name = htmlspecialchars($student_name);
 //                        $total_grades++;
                         /**TODO: Experiment with changing this to a joined query somewhere.
                         Currently this checks the previously defined student list to make sure the student has a
                         grade entered in the gradebook already, to prevent some ugly math and division by zero issues.*/
-                        if(in_array($student_id, $studentlist)){
-                            $gradesql = "SELECT grade_earned FROM grade 
-                                         WHERE assign_id = $assignid
-                                         AND student_id = $student_id";
-                            $thesegrades = pdoSelect($gradesql);
-                            extract($thesegrades[0]);
+                        if($grade_earned){
                             $pcnt_assign = round((($grade_earned / $grade_max) * 100), 2);
                         }
                         else{
@@ -137,7 +111,7 @@ extract($gradebookRows[0]);
       <td colspan='2'>$grade_earned</td>
       <td colspan='2'>$grade_max</td>
       <td>$pcnt_assign%</td>
-      <td class='addeditbtn'><button data-toggle='modal' data-target='#classeditgrademodal' data-assignid='$assign_id'
+      <td class='addeditbtn'><button data-toggle='modal' data-target='#classeditgrademodal' data-assignid='$assignid'
                              data-student='$student_id' data-assigngrade='$grade_earned'
                              class='btn btn-sm btn-warning'>Edit</a></td>
       </tr>
