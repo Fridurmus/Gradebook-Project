@@ -7,7 +7,7 @@
  * Time: 11:23 AM
  */
 
-require_once 'includes/database_functions.php';
+require_once '../includes/database_functions.php';
 
 $assignid = $_POST['assignid'];
 $assignname = htmlspecialchars($_POST['assignname']);
