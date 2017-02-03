@@ -67,9 +67,9 @@ $gradedStudentsSql = "SELECT student.student_name, student.student_id,
                             WHERE class_id = :classid)";
 $gradedStudentsVars = [':assignid' => $assignid, ':classid' => $classid];
 $gradedStudents = pdoSelect($gradedStudentsSql, $gradedStudentsVars);
-
-extract($gradedStudents[0]);
-
+if($gradedStudents){
+    extract($gradedStudents[0]);
+}
 ?>
 <div id="classgrades">
     <div class="container maintable" id="messagebox">
