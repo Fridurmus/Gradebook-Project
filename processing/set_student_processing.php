@@ -6,6 +6,6 @@ session_start();
  * Date: 1/19/2017
  * Time: 11:15 AM
  */
-$_SESSION['classid'] = $_GET['id'];
-header("Location: edit_class.php"); /* Redirect browser */
+$_SESSION['studentid'] = $_GET['student'];
+header("Location: ../view_record.php"); /* Redirect browser */
 ?>

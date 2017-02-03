@@ -1,18 +1,17 @@
 /**
- * Created by Sean Davis on 1/20/2017.
+ * Created by Sean Davis on 1/23/2017.
  */
-$("#editclassform").submit(function (event) {
+$("#editstudentform").submit(function (event) {
     event.preventDefault();
-    var classname = $("#classnameedit").val();
-    var classid = $("#classidedit").val();
-    var studentids = $(".editclasscheck:checked").map(function () {
+    var studentname = $("#studentnameedit").val();
+    var studentid = $("#studentidedit").val();
+    var classids = $('#editstudentform [type="checkbox"]:checked').map(function () {
         return this.value;
     }).get().join();
     var successmess = $("<div class='alert alert-success alert-dismissable fade'>"+
-        "<strong>Class was updated successfully.</strong> " +
-        "<span><a href='index.php' class='alert-link'>Click here to return to the class list.</a></span>"+
+        "<strong>Student was updated successfully.</strong>"+
         "<button type='button' href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</button>"+
-    "</div>");
+        "</div>");
     var errormess = $("<div class='alert alert-danger alert-dismissable fade'>"+
         "<a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>"+
         "<strong>Update failed.</strong> Please contact support."+
@@ -21,7 +20,8 @@ $("#editclassform").submit(function (event) {
         $(".alert").addClass("in");
     }
 
-    $.post("edit_class_processing.php", {classname : classname, classid : classid, studentids : studentids}, function (data) {
+    $.post("./processing/edit_student_processing.php", {studentname : studentname, studentid : studentid, classids : classids
+                                           }, function (data) {
         $(".alert-dismissable").alert('close');
         console.log(data);
         var resultstate = true;
@@ -34,10 +34,14 @@ $("#editclassform").submit(function (event) {
         }
         if(resultstate){
             $("#messagebox").prepend(successmess);
+            setTimeout(function(){
+                location.replace("view_students.php");
+            }, 2000);
         }
         else{
             $("#messagebox").prepend(errormess);
         }
+        $('#editstudentmodal').modal('hide');
         window.setTimeout(function () {
             showAlert();
         }, 50);

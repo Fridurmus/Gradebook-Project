@@ -4,10 +4,10 @@
 .addeditbtn{
     text-align: right;
 }
+.hidethis {
+     display: none;
+}
 #noclass{
     text-align: center;
     text-decoration: none;
-}
-.hidethis {
-    display: none;
 }

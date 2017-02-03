@@ -6,7 +6,7 @@
  * Time: 11:23 AM
  */
 
-require_once 'includes/database_functions.php';
+require_once '../includes/database_functions.php';
 
 $classid = $_POST['classid'];
 $classname = htmlspecialchars($_POST['classname']);

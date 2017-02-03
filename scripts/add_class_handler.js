@@ -1,7 +1,7 @@
 /**
  * Created by Sean Davis on 1/20/2017.
  */
-$("#addclassform").submit(function () {
+$("#addclassform").submit(function (event) {
     event.preventDefault();
     var classname = "classname=" + $("#classname").val();
     var successmess = $("<div class='alert alert-success alert-dismissable fade'>"+
@@ -16,7 +16,7 @@ $("#addclassform").submit(function () {
         $(".alert").addClass("in");
     }
 
-    $.post("add_class_processing.php", classname, function (data) {
+    $.post("./processing/add_class_processing.php", classname, function (data) {
         $(".alert-dismissable").alert('close');
         console.log(data);
         var resultstate = true;
@@ -30,7 +30,7 @@ $("#addclassform").submit(function () {
         if(resultstate){
             $("#messagebox").prepend(successmess);
             setTimeout(function(){
-                location.replace("index.php");
+                location.replace("./index.php");
             }, 2000);
         }
         else{

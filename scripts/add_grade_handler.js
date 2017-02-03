@@ -1,16 +1,14 @@
 /**
  * Created by Sean Davis on 1/20/2017.
  */
-/**
- * Created by Sean Davis on 1/20/2017.
- */
-$("#editgradeform").submit(function (event) {
+$("#addgradeform").submit(function (event) {
     event.preventDefault();
-    var assignname = $("#assignnameedit").val();
-    var maxgrade = $("#maxgradeedit").val();
-    var assignid = $("#assignidedit").val();
+    var assignname = $("#assignnameadd").val();
+    var assigngrade = $("#assigngradeadd").val();
+    var maxgrade = $("#maxgradeadd").val();
+    var classid = $("#classidadd").val();
     var successmess = $("<div class='alert alert-success alert-dismissable fade'>"+
-        "<strong>Assignment was updated successfully.</strong>"+
+        "<strong>Assignment was added successfully.</strong>"+
         "<button type='button' href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</button>"+
         "</div>");
     var errormess = $("<div class='alert alert-danger alert-dismissable fade'>"+
@@ -21,11 +19,14 @@ $("#editgradeform").submit(function (event) {
         $(".alert").addClass("in");
     }
 
-    $.post("edit_grade_processing.php", {
+
+    $.post("./processing/add_grade_processing.php", {
         assignname : assignname,
+        assigngrade : assigngrade,
         maxgrade : maxgrade,
-        assignid : assignid
-    }, function (data) {
+        classid : classid
+    },
+        function (data) {
         $(".alert-dismissable").alert('close');
         console.log(data);
         var resultstate = true;
@@ -45,10 +46,9 @@ $("#editgradeform").submit(function (event) {
         else{
             $("#messagebox").prepend(errormess);
         }
-        $('#editassignmodal').modal('hide');
+        $('#addassignmodal').modal('hide');
         window.setTimeout(function () {
             showAlert();
         }, 50);
-
     });
 });

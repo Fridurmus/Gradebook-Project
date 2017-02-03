@@ -6,7 +6,7 @@
  * Time: 11:23 AM
  */
 
-require_once 'includes/database_functions.php';
+require_once '../includes/database_functions.php';
 
 $studentid = $_POST['studentid'];
 $studentname = htmlspecialchars($_POST['studentname']);

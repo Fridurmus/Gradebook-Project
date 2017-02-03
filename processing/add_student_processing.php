@@ -5,7 +5,7 @@
  * Date: 1/23/2017
  * Time: 1:20 PM
  */
-require_once 'includes/database_functions.php';
+require_once '../includes/database_functions.php';
 
 $studentname = $_POST['student'];
 

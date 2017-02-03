@@ -1,46 +1,6 @@
 <?php
     session_start();
-?>
-
-<head>
-    <title>Student Record</title>
-    <meta name="author" content="Sean Davis">
-    <meta name="description" content="Gradebook and grade tracker">
-    <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
-          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-    <!-- Optional theme -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
-          integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
-    <link rel="stylesheet" type="text/css" href="gradebook_theme.css">
-</head>
-
-<nav class="navbar navbar-default">
-    <div class="container-fluid">
-        <!-- Brand and toggle get grouped for better mobile display -->
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
-                    data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a href="index.php"><span class="navbar-brand">Gradebook</span></a>
-        </div>
-
-        <!-- Collect the nav links, forms, and other content for toggling -->
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <ul class="nav navbar-nav">
-                <li><a href="index.php">View Classes</a></li>
-                <li><a href="view_students.php">View Students</a></li>
-            </ul>
-        </div><!-- /.navbar-collapse -->
-    </div><!-- /.container-fluid -->
-</nav>
-
-<body>
-<?php
+    require_once "header.php";
 /**
  * Created by PhpStorm.
  * User: Sean Davis
@@ -49,12 +9,14 @@
  */
 
 //Handler for returning to the correct page after setting a grade record.
-if (empty($_GET)){
-    $prev_id = null;
-}
-else{
-    $prev_id = $_GET['previd'];
-}
+
+$prev_id = (empty($_GET)) ? null : $_GET['previd'];
+//if (empty($_GET)){
+//    $prev_id = null;
+//}
+//else{
+//    $prev_id = $_GET['previd'];
+//}
 
 //Session variable set by set_student_processing.php.
 $studentid = $_SESSION['studentid'];
@@ -77,14 +39,14 @@ $student_name = htmlspecialchars($student_name);
             $classSql = "SELECT * FROM class";
             $studentClassSql = "SELECT * FROM student_class WHERE student_id = :studentid";
             $classRows = pdoSelect($classSql);
+            // studentvars declared above
             $matchedRows = pdoSelect($studentClassSql, $studentIdVars);
             $rowCount = 0;
             foreach($matchedRows as $matchedRow){
                 extract($matchedRow);
                 array_push($studentClasses, $class_id);
             };
-            ?>
-                <?PHP
+
                 //Checking to be sure the student is actually enrolled.
                 if(count($studentClasses) == 0){
                     echo "<a href='view_students.php' id='noclass'><div class='alert alert-warning'>
@@ -128,14 +90,10 @@ $student_name = htmlspecialchars($student_name);
                          <table class="table table-hover">
                             <thead>
                             <tr>
-                                <th>Assignment Name</th>
-                                <th></th>
-                                <th></th>
+                                <th colspan="3">Assignment Name</th>
                                 <th>Grade Earned</th>
-                                <th>Possible Grade</th>
-                                <th></th>
-                                <th>Percentage</th>
-                                <th></th>
+                                <th colspan="2">Possible Grade</th>
+                                <th colspan="2">Percentage</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -143,10 +101,10 @@ LUP;
 
                     $totalEarned = 0;
                     $pcntTotal = 0;
-                    $gradebookSql = "SELECT gradebook.*, grade.grade_earned
-                                     FROM gradebook
-                                     LEFT OUTER JOIN grade ON grade.student_id = :student_id AND grade.assign_id = gradebook.assign_id
-                                     WHERE gradebook.class_id = :class_id";
+                    $gradebookSql = "SELECT gb.*, g.grade_earned
+                                     FROM gradebook gb
+                                     LEFT OUTER JOIN grade g ON g.student_id = :student_id AND g.assign_id = gb.assign_id
+                                     WHERE gb.class_id = :class_id";
                     $gradebookVars = [':student_id' => $studentid, ':class_id' => $class_id];
                     $gradebookRows = pdoSelect($gradebookSql, $gradebookVars);
                     foreach ($gradebookRows as $gradebookRow) {
@@ -165,14 +123,12 @@ LUP;
 
                         echo <<<BUD
                           <tr>
-                          <td>$assign_name</td>
-                          <td></td>
-                          <td></td>
-                          <td>$grade_earned</td>
-                          <td>$grade_max</td>
-                          <td></td>
-                          <td>$pcntAssign%</td>
-                          <td class='addeditbtn'><button type="button" data-toggle="modal" data-target="#editrecordmodal" data-assignid="$assign_id"
+                              <td colspan="3">$assign_name</td>
+                              <td>$grade_earned</td>
+                              <td colspan="2">$grade_max</td>
+                              <td>$pcntAssign%</td>
+                              <td class='addeditbtn'><button type="button" data-toggle="modal" 
+                                                 data-target="#editrecordmodal" data-assignid="$assign_id"
                                                  data-assignname="$assign_name" data-grademax="$grade_max" 
                                                  data-classid = "$class_id" data-gradeearn="$grade_earned" 
                                                  class="btn btn-sm btn-warning">Edit</td>
@@ -181,8 +137,8 @@ BUD;
                     }
                     echo <<<DUD
                           <tr>
-                          <td class='addeditbtn' colspan='7'>Overall:</td>
-                          <td>$pcntTotal%</td>
+                              <td class='addeditbtn' colspan='7'>Overall:</td>
+                              <td>$pcntTotal%</td>
                           </tr>
                           </tbody>
                         </table>
@@ -227,14 +183,11 @@ DUD;
 
 
 
-<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-<!-- Latest compiled and minified JavaScript -->
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
-        integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
-        crossorigin="anonymous"></script>
-<script type="text/javascript" src="record_view_handler.js"></script>
-<script type="text/javascript" src="edit_record_handler.js"></script>
+<?PHP
+require_once "footer.php";
+?>
+<script type="text/javascript" src="scripts/record_view_handler.js"></script>
+<script type="text/javascript" src="scripts/edit_record_handler.js"></script>
 <script>
     $('#editrecordmodal').on('show.bs.modal', function(event){
         var button = $(event.relatedTarget);
@@ -247,4 +200,3 @@ DUD;
         modal.find("#recordassignedit").val(assignid);
     });
 </script>
-</body>

@@ -1,14 +1,11 @@
 /**
- * Created by Sean Davis on 1/20/2017.
+ * Created by Sean Davis on 1/23/2017.
  */
-$("#addgradeform").submit(function () {
+$("#addstudentform").submit(function (event) {
     event.preventDefault();
-    var assignname = $("#assignnameadd").val();
-    var assigngrade = $("#assigngradeadd").val();
-    var maxgrade = $("#maxgradeadd").val();
-    var classid = $("#classidadd").val();
+    var studentname = "student=" + $("#studentname").val();
     var successmess = $("<div class='alert alert-success alert-dismissable fade'>"+
-        "<strong>Assignment was added successfully.</strong>"+
+        "<strong>Student was added successfully.</strong>"+
         "<button type='button' href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</button>"+
         "</div>");
     var errormess = $("<div class='alert alert-danger alert-dismissable fade'>"+
@@ -19,14 +16,7 @@ $("#addgradeform").submit(function () {
         $(".alert").addClass("in");
     }
 
-
-    $.post("add_grade_processing.php", {
-        assignname : assignname,
-        assigngrade : assigngrade,
-        maxgrade : maxgrade,
-        classid : classid
-    },
-        function (data) {
+    $.post("./processing/add_student_processing.php", studentname, function (data) {
         $(".alert-dismissable").alert('close');
         console.log(data);
         var resultstate = true;
@@ -40,13 +30,13 @@ $("#addgradeform").submit(function () {
         if(resultstate){
             $("#messagebox").prepend(successmess);
             setTimeout(function(){
-                location.replace("edit_class.php");
+                location.replace("view_students.php");
             }, 2000);
         }
         else{
             $("#messagebox").prepend(errormess);
         }
-        $('#addassignmodal').modal('hide');
+        $('#addstudentmodal').modal('hide');
         window.setTimeout(function () {
             showAlert();
         }, 50);

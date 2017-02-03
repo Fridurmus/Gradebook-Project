@@ -1,43 +1,9 @@
 <?PHP
 session_start();
+require_once 'header.php';
 ?>
 
-<head>
-    <title>Manage Class</title>
-    <!-- Latest compiled and minified CSS -->
-    <meta name="author" content="Sean Davis">
-    <meta name="description" content="Gradebook and grade tracker">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-    <!-- Optional theme -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
-    <link rel="stylesheet" type="text/css" href="gradebook_theme.css">
-</head>
 
-<nav class="navbar navbar-default">
-    <div class="container-fluid">
-        <!-- Brand and toggle get grouped for better mobile display -->
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
-                    data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a href="index.php"><span class="navbar-brand">Gradebook</span></a>
-        </div>
-
-        <!-- Collect the nav links, forms, and other content for toggling -->
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <ul class="nav navbar-nav">
-                <li><a href="index.php">View Classes</a></li>
-                <li><a href="view_students.php">View Students</a></li>
-            </ul>
-        </div><!-- /.navbar-collapse -->
-    </div><!-- /.container-fluid -->
-</nav>
-
-<body>
 <div class="container">
     <form id="editclassform" action=''>
     <div id="messagebox">
@@ -53,9 +19,9 @@ session_start();
                 //Defining a single variable array for multiple pdoSelects.
                 $classIdVars = [':classId' => $classId];
                 $studentList = [];
-                $classStudentSql = "SELECT student.student_id, student.student_name, class.class_name
-                                                FROM student
-                                                JOIN class ON class.class_id = :classId";
+                $classStudentSql = "SELECT s.student_id, s.student_name, c.class_name
+                                                FROM student s
+                                                JOIN class c ON c.class_id = :classId";
                 $classStudents = pdoSelect($classStudentSql, $classIdVars);
                 extract($classStudents[0]);
                 $classNameForm = textField("Class Name:", "classnameedit", $class_name, $class_name);
@@ -81,28 +47,19 @@ session_start();
                 extract($studentRow);
                 $student_name = htmlspecialchars($student_name);
                 if (in_array(($student_id), $studentList)) {
+                    $checked = (in_array(($student_id), $studentList)) ? 'checked' : '';
+                }
                     echo <<<STU
                             <div class="col-sm-12">
                                 <div class="checkbox">
                                     <label>
-                                        <input type="checkbox" class="editclasscheck" id="$student_id" value="$student_id" checked>
+                                        <input type="checkbox" class="editclasscheck" id="$student_id" value="$student_id" $checked>
                                         <strong>$student_name</strong>
                                     </label>
                                 </div>
                             </div>
 STU;
-                } else {
-                    echo <<<STD
-                        <div class="col-sm-12">
-                            <div class="checkbox">
-                                <label>
-                                    <input type="checkbox" class="editclasscheck" id="$student_id" value="$student_id">
-                                    <strong>$student_name</strong>
-                                </label>
-                            </div>
-                        </div>
-STD;
-                }
+
             }
             ?>
         </div>
@@ -117,11 +74,8 @@ STD;
             <table class="table table-hover">
                 <thead>
                 <tr>
-                    <th>Assignment Name</th>
-                    <th></th>
-                    <th>Possible Grade</th>
-                    <th></th>
-                    <th></th>
+                    <th colspan="2">Assignment Name</th>
+                    <th colspan="3">Possible Grade</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -132,10 +86,10 @@ STD;
                     $totalPossible = $totalPossible + $grade_max;
                     echo <<<BUD
       <tr>
-      <td colspan='2'>$assign_name</td>
-      <td>$grade_max</td>
-      <td class='addeditbtn'><a href="view_assignments.php?assign=$assign_id" class="btn btn-sm btn-info">Manage Grades</td>
-      <td class='addeditbtn'><button type="button" data-toggle="modal" data-target="#editassignmodal" data-assignid="$assign_id"
+          <td colspan='2'>$assign_name</td>
+          <td>$grade_max</td>
+          <td class='addeditbtn'><a href="view_assignments.php?assign=$assign_id" class="btn btn-sm btn-info">Manage Grades</td>
+          <td class='addeditbtn'><button type="button" data-toggle="modal" data-target="#editassignmodal" data-assignid="$assign_id"
                              data-assignname="$assign_name" data-grademax="$grade_max" 
                              class="btn btn-sm btn-warning">Edit</td>
       </tr>
@@ -143,9 +97,9 @@ BUD;
                 }
                 echo <<<DUD
       <tr>
-      <td id='overalltext' colspan='3';>Overall Possible:</td>
-      <td>$totalPossible points</td>
-      <td class='addeditbtn'><button type="button" data-toggle="modal" data-target="#addassignmodal" class="btn btn-success btn-sm">Add New +</a></td>
+         <td id='overalltext' colspan='3';>Overall Possible:</td>
+         <td>$totalPossible points</td>
+         <td class='addeditbtn'><button type="button" data-toggle="modal" data-target="#addassignmodal" class="btn btn-success btn-sm">Add New +</a></td>
       </tr>
 DUD;
                 ?>
@@ -174,17 +128,17 @@ DUD;
                 <h4 class="modal-title" id="addassignmodallabel">Add New Assignment</h4>
             </div>
             <div class="modal-body">
-                <?php
-                $assignnameform = textField("Assignment Name:", "assignnameadd", "Assignment");
-                $gradeearnform = numField("Grade Earned:", "assigngradeadd", "", "", "0");
-                $maxgradeform = numField("Max Grade:", "maxgradeadd", "", "", "0");
-                ?>
                 <div class="container">
                     <div class="row">
                         <div class="col-md-4" id="addgradeform">
                             <form id="addassignform" action="">
-                                <?=$assignnameform?>
-                                <?=$maxgradeform?>
+                                <?php
+                                $assignnameform = textField("Assignment Name:", "assignnameadd", "Assignment");
+                                $gradeearnform = numField("Grade Earned:", "assigngradeadd", "", "", "0");
+                                $maxgradeform = numField("Max Grade:", "maxgradeadd", "", "", "0");
+                                echo $assignnameform;
+                                echo $maxgradeform;
+                                ?>
                                 <?="<input type='hidden' id='classidadd' name='classidadd' value=$classId required>"?><br>
                             </form>
                         </div>
@@ -206,17 +160,17 @@ DUD;
                 <h4 class="modal-title" id="editassignmodallabel">Edit Assignment</h4>
             </div>
             <div class="modal-body">
-                <?php
-                $assignnameform = textField("Assignment Name:", "assignnameedit", "");
-                $maxgradeform = numField("Max Grade:", "maxgradeedit", "", "");
-                ?>
                 <div class="container">
                     <div class="row">
                         <div class="col-md-4" id="editgradeform">
                             <form id="editassignform" action=''>
-                                <?=$assignnameform?>
-                                <?=$maxgradeform?>
-                                <?="<input type='hidden' id='assignidedit' name='assignidedit' required>"?><br>
+                                <?php
+                                $assignnameform = textField("Assignment Name:", "assignnameedit", "");
+                                $maxgradeform = numField("Max Grade:", "maxgradeedit", "", "");
+                                echo $assignnameform;
+                                echo $maxgradeform;
+                                ?>
+                                <input type='hidden' id='assignidedit' name='assignidedit' required><br>
                             </form>
                         </div>
                     </div>
@@ -229,13 +183,12 @@ DUD;
     </div>
 </div>
 
-<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-<!-- Latest compiled and minified JavaScript -->
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-<script type="text/javascript" src="edit_class_handler.js"></script>
-<script type="text/javascript" src="add_grade_handler.js"></script>
-<script type="text/javascript" src="edit_grade_handler.js"></script>
+<?php
+require_once 'footer.php';
+?>
+<script type="text/javascript" src="scripts/edit_class_handler.js"></script>
+<script type="text/javascript" src="scripts/add_grade_handler.js"></script>
+<script type="text/javascript" src="scripts/edit_grade_handler.js"></script>
 <script>
     $('#editassignmodal').on('show.bs.modal', function(event){
         var button = $(event.relatedTarget);
@@ -248,4 +201,3 @@ DUD;
         modal.find("#maxgradeedit").val(maxgrade);
     });
 </script>
-</body>

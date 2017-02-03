@@ -1,16 +1,17 @@
 <?php
+session_start();
 /**
  * Created by PhpStorm.
  * User: Sean Davis
- * Date: 1/30/2017
- * Time: 10:57 AM
+ * Date: 1/27/2017
+ * Time: 12:08 PM
  */
 
-require_once 'includes/database_functions.php';
+require_once '../includes/database_functions.php';
 
 $gradeearned = $_POST['gradeearned'];
 $assignid = $_POST['assignid'];
-$studentid = $_POST['studentid'];
+$studentid = $_SESSION['studentid'];
 
 $sqlxrefdel = "DELETE FROM grade
            WHERE assign_id = :assignid AND student_id = :studentid";
